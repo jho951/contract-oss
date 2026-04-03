@@ -1,0 +1,7 @@
+rootProject.name = 'plugin-policy-engine'
+
+include 'plugin-policy-engine-core'
+include 'plugin-policy-engine-spring'
+include 'plugin-policy-engine-spring-boot-starter'
+include 'plugin-policy-engine-common-test'
+

@@ -1,0 +1,8 @@
+rootProject.name = 'rate-limiter'
+
+include 'rate-limiter-core'
+include 'rate-limiter-redis'
+include 'rate-limiter-spring'
+include 'rate-limiter-spring-boot-starter'
+include 'rate-limiter-common-test'
+

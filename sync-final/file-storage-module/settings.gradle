@@ -1,0 +1,8 @@
+rootProject.name = 'file-storage-module'
+
+include 'file-storage-api'
+include 'file-storage-core'
+include 'file-storage-spring'
+include 'file-storage-spring-boot-starter'
+include 'file-storage-common-test'
+
