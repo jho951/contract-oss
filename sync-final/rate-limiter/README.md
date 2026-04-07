@@ -11,17 +11,21 @@
 - Redis 기반 분산 제한
 - Spring 연동
 
-## 기준
+## 권장 모듈
 
-- 공통 계약과 경계 규칙은 [oss-contract](https://github.com/jho951/oss-contract)를 따른다.
-- 실제 서비스 서버의 계약은 [service-contract](https://github.com/jho951/service-contract)를 따른다.
+- `rate-limiter-core`
+- `rate-limiter-redis`
+- `rate-limiter-spring`
+- `rate-limiter-spring-boot-starter`
+- `rate-limiter-common-test`
 
-## 범위
+## 모듈 설명
 
-- IP / 사용자 ID / API 키 기준 제한
-- in-memory token bucket
-- Redis 기반 분산 제한
-- Spring adapter
+- `rate-limiter-core`: 요청량 제한 규칙과 판단 로직
+- `rate-limiter-redis`: Redis 기반 분산 제한
+- `rate-limiter-spring`: Spring 어댑터
+- `rate-limiter-spring-boot-starter`: 소비 진입점
+- `rate-limiter-common-test`: 테스트 지원
 
 ## 제외 범위
 
@@ -36,4 +40,4 @@
 2. [docs/architecture.md](docs/architecture.md)
 3. [docs/modules.md](docs/modules.md)
 4. [docs/extension-guide.md](docs/extension-guide.md)
-
+5. [docs/redis-strategy.md](docs/redis-strategy.md)

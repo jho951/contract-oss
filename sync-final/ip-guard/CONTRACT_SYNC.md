@@ -3,7 +3,6 @@
 ## 기준
 
 - 기준 SOT: `oss-contract`
-- 서비스 계약 기준: `service-contract`
 - 대상 레포: `ip-guard`
 
 ## 확인된 역할
@@ -19,6 +18,7 @@
 - `docs/architecture.md`
 - `docs/modules.md`
 - `docs/extension-guide.md`
+- `docs/access-flow.md`
 - `build.gradle`
 - `settings.gradle`
 - `.github/workflows/publish.yml`

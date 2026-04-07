@@ -1,27 +1,25 @@
 # SOT Registry
 
-이 레포는 직접 구현 코드를 담지 않는다.
+이 레포는 구현 코드를 담지 않고, 계층 경계와 계약만 관리한다.
 
-역할은 다음 3가지를 하나의 진실원천으로 관리하는 것이다.
+## Core Docs
 
-- 현재 존재하는 1계층 OSS 레포들
-- 앞으로 만들 2계층 platform 구조
-- 앞으로 만들어질 3계층 service 구조
-- 계층 사이의 소유권, 의존성, 경계 규칙
+- [layer1-status.md](layer1-status.md): 1계층 현황과 운영 절차
+- [layer1-gradle-properties.md](layer1-gradle-properties.md): 1계층 gradle.properties 표준
+- [layer1-ci-cd.md](layer1-ci-cd.md): 1계층 CI/CD 표준
+- [layer1-maven-central.md](layer1-maven-central.md): 1계층 Maven Central 구조 표준
+- [layer1-checklist.md](layer1-checklist.md): 1계층 공통 점검표
+- [layer2-status.md](layer2-status.md): 2계층 현황과 운영 절차
 
-## 관리 대상
+## Catalog
 
-- 현재 OSS: [current-oss.md](current-oss.md)
-- 확인된 역할: [observed-roles.md](observed-roles.md)
-- 미래 platform: [future-platforms.md](future-platforms.md)
-- 미래 service: [service-layer.md](service-layer.md)
-- 서비스 기준 계약: [service-contract.md](service-contract.md)
-- 실행 순서: [release-execution-order.md](release-execution-order.md)
+- [repositories/README.md](../repositories/README.md): 레포 카탈로그 진입점
+- [repositories/layer1.md](../repositories/layer1.md): 1계층 OSS 묶음
+- [repositories/layer2.md](../repositories/layer2.md): 2계층 platform 묶음
 
-## 관리 내용
+## Rules
 
-- 어떤 OSS가 어떤 플랫폼으로 흡수되는지
-- 어떤 계약이 공통인지
-- 어떤 레포가 어떤 책임을 가지는지
-- 플랫폼끼리 직접 얽히지 않도록 하는 규칙
-- 실제 레포에 반영하는 커밋 / push / tag 순서
+- 1계층 레포 문서에는 계층 매핑을 반복하지 않는다.
+- 1계층 OSS는 기능별 책임과 published artifact 경계만 가진다.
+- platform 레포는 1계층 published artifact의 exact version만 pin 한다.
+- public 문서는 역할과 경계를, registry는 SOT와 규칙을 담는다.

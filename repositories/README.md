@@ -4,18 +4,20 @@
 
 ## 사용법
 
-- 각 레포는 하나의 문서로 요약한다.
-- 문서에는 현재 상태, 목표 상태, 변경 포인트, 소유 기준을 적는다.
-- `oss-contract`의 다른 registry 문서는 이 카탈로그를 보조한다.
+- 1계층 OSS는 [layer1.md](layer1.md)에서 묶어 본다.
+- 2계층 platform은 [layer2.md](layer2.md)에서 묶어 본다.
+- `oss-contract`의 registry는 경계와 운영 기준을 보조한다.
 
 ## 포함 범위
 
 - 1계층 OSS
 - 2계층 platform
-- 3계층 service
-- `service-contract`
+
+## 계층 해석
+
+- 1계층 OSS는 기능 구현과 published artifact 발행을 담당한다.
+- 2계층 platform은 서비스가 직접 소비하는 조립 계층이다.
 
 ## 문서 템플릿
 
 - [레포 문서 템플릿](template.md)
-

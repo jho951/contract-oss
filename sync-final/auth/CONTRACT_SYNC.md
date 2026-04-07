@@ -3,7 +3,6 @@
 ## 기준
 
 - 기준 SOT: `oss-contract`
-- 서비스 계약 기준: `service-contract`
 - 대상 레포: `auth`
 
 ## 확인된 역할
@@ -11,6 +10,13 @@
 - 인증 처리 라이브러리
 - principal / token / session 중심
 - JWT / OAuth2 / Spring 연동 분리
+
+## SCM 메타데이터 기준
+
+- `github_org`: `jho951`
+- `github_repo`: `auth`
+- `url`, `connection`, `developerConnection`은 위 두 키를 조립해서 만든다.
+- SCM URL을 build.gradle에 하드코딩하지 않는다.
 
 ## 반영 문서
 

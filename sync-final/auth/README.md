@@ -1,6 +1,7 @@
 # platform-security auth
 
 `auth`는 `platform-security`의 인증 구현 레포다.
+`auth` 자체가 1계층 OSS이고, `platform-security`는 그 위의 2계층이다.
 
 ## 책임
 
@@ -12,12 +13,7 @@
 - OAuth2 구현
 - Spring 연동
 
-## 기준
-
-- 공통 계약과 경계 규칙은 [oss-contract](https://github.com/jho951/oss-contract)를 따른다.
-- 실제 서비스 서버의 계약은 [service-contract](https://github.com/jho951/service-contract)를 따른다.
-
-## 범위
+## 권장 모듈
 
 - `auth-core`
 - `auth-jwt`
@@ -26,6 +22,22 @@
 - `auth-spring`
 - `auth-spring-boot-starter`
 - `auth-common-test`
+
+## 모듈 설명
+
+- `auth-core`: 핵심 인증 모델과 인터페이스
+- `auth-jwt`: JWT 발급/검증
+- `auth-session`: 세션 처리
+- `auth-hybrid`: 조합 전략
+- `auth-spring`: Spring 어댑터
+- `auth-spring-boot-starter`: 소비 진입점
+- `auth-common-test`: 테스트 지원
+
+## SCM 메타데이터
+
+- `github_org`: `jho951`
+- `github_repo`: `auth`
+- `url`, `connection`, `developerConnection`은 위 두 키를 조합한다.
 
 ## 제외 범위
 
@@ -41,4 +53,3 @@
 3. [docs/modules.md](docs/modules.md)
 4. [docs/extension-guide.md](docs/extension-guide.md)
 5. [docs/oauth2-design.md](docs/oauth2-design.md)
-

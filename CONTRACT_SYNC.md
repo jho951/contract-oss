@@ -1,24 +1,22 @@
 # CONTRACT_SYNC
 
-이 문서는 `oss-contract`를 기준으로 1계층 OSS, 2계층 platform, 3계층 service 문서를 동기화하는 규격이다.
+이 문서는 `oss-contract`를 기준으로 1계층 OSS와 2계층 platform 문서를 동기화하는 규격이다.
 
 ## 목적
 
 - 계약의 단일 진실원천을 유지한다.
-- OSS, platform, service의 책임 경계를 일관되게 맞춘다.
+- OSS와 platform의 책임 경계를 일관되게 맞춘다.
 - 구현 레포가 제각각 다른 설명을 갖지 않도록 한다.
 
 ## 기준 저장소
 
 - `oss-contract`: OSS와 platform 사이의 계약 SOT
-- `service-contract`: 실제 서비스 서버와 platform 사이의 계약 SOT
 
 ## 동기화 대상
 
 - 1계층 OSS 목록
 - 1계층 OSS의 실제 역할
 - 2계층 platform의 책임
-- 3계층 service의 책임
 - 의존 방향 규칙
 - 공통 계약 범위
 
@@ -33,13 +31,6 @@
 - OpenAPI 계약
 - OSS/Platform 경계 규칙
 
-### `service-contract`에서 정의하는 것
-
-- 실제 서비스 서버의 계약
-- 서비스 요청/응답 규격
-- 서비스 간 인터페이스
-- 서비스별 환경변수와 OpenAPI 규약
-
 ### 각 OSS 레포에서 정의하는 것
 
 - 해당 OSS의 구현
@@ -52,18 +43,12 @@
 - 실제 서비스가 사용하는 공통 기반 구현
 - OSS 모듈을 묶는 방식
 - platform 내부 구현
-
-### 각 service 레포에서 정의하는 것
-
-- 실제 고객/업무 기능
-- platform 조합 방식
-- 서비스 고유 API와 흐름
+- 서비스가 직접 소비하는 조립된 API 경계
 
 ## 현재 계층 정의
 
-- 1계층 OSS: `auth`, `ip-guard`, `rate-limiter`, `audit-log`, `policy-config`, `plugin-policy-engine`, `file-storage-module`, `notification`
-- 2계층 platform: `platform-security`, `platform-governance`, `platform-storage`
-- 3계층 service: 주문, 예약, 정산 같은 실제 서비스
+- 1계층 OSS: `auth`, `ip-guard`, `rate-limiter`, `audit-log`, `policy-config`, `plugin-policy-engine`, `file-storage`, `notification`
+- 2계층 platform: `platform-security`, `platform-governance`, `platform-resource`
 
 ## 현재 역할 기준
 
@@ -73,8 +58,13 @@
 - `audit-log`: 구조화 감사 로그
 - `policy-config`: 정책 키/설정 소스 조회
 - `plugin-policy-engine`: 정책 조합/평가
-- `file-storage-module`: 파일 저장 추상화
-- `notification`: 작성 전
+- `file-storage`: 파일 저장 추상화
+- `notification`: 일반 알림 추상화, 메시지 모델, 전달 채널 조합
+
+## 책임 수준 요약
+
+- 1계층 OSS는 기능 구현과 published artifact 제공이 책임이다.
+- 2계층 platform은 1계층 OSS를 조립해 3계층이 쉽게 가져다 쓸 수 있는 integration API를 제공하는 것이 책임이다.
 
 ## 동기화 절차
 
@@ -88,26 +78,25 @@
 
 ### 1. OSS 역할이 바뀌는 경우
 
-- `registry/current-oss.md`
-- `registry/observed-roles.md`
-- `registry/mapping.md`
-- `registry/repo-roles.md`
+- `registry/layer1-status.md`
+- `registry/layer2-status.md`
 
 를 함께 갱신한다.
 
 ### 2. platform 책임이 바뀌는 경우
 
-- `registry/future-platforms.md`
-- `registry/dependency-rules.md`
-- `registry/repo-roles.md`
+- `registry/layer2-status.md`
 
 를 함께 갱신한다.
 
-### 3. service 경계가 바뀌는 경우
+### 3. 동기화 절차가 바뀌는 경우
 
-- `registry/service-layer.md`
-- `registry/service-contract.md`
-- `registry/dependency-rules.md`
+- `registry/layer1-status.md`
+- `registry/layer1-gradle-properties.md`
+- `registry/layer1-ci-cd.md`
+- `registry/layer1-maven-central.md`
+- `registry/layer1-checklist.md`
+- `registry/layer2-status.md`
 
 를 함께 갱신한다.
 
@@ -117,7 +106,6 @@
 - 구현 레포는 `oss-contract`의 문구를 거스르지 않는다.
 - 애매하면 더 좁은 책임으로 자른다.
 - 플랫폼끼리는 직접 의존하지 않는다.
-- 서비스는 플랫폼을 조립해서 쓴다.
 
 ## 상태 기록 템플릿
 
@@ -128,4 +116,3 @@
 - 마지막 동기화 일자
 - 반영된 변경 요약
 - 남은 작업
-

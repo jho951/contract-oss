@@ -1,7 +1,0 @@
-rootProject.name = 'policy-config'
-
-include 'policy-config-core'
-include 'policy-config-spring'
-include 'policy-config-spring-boot-starter'
-include 'policy-config-common-test'
-

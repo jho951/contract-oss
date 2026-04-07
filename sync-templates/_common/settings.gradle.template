@@ -1,7 +1,0 @@
-rootProject.name = 'oss-module'
-
-include 'module-core'
-include 'module-spring'
-include 'module-spring-boot-starter'
-include 'module-common-test'
-

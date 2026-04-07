@@ -9,17 +9,18 @@
 - core 판단 로직
 - Spring 연동
 
-## 기준
-
-- 공통 계약과 경계 규칙은 [oss-contract](https://github.com/jho951/oss-contract)를 따른다.
-- 실제 서비스 서버의 계약은 [service-contract](https://github.com/jho951/service-contract)를 따른다.
-
-## 범위
+## 권장 모듈
 
 - IP allowlist / denylist
 - 요청 진입 보안
 - core 엔진
 - Spring adapter
+
+## 모듈 설명
+
+- `ip-guard-core`: IP 판단 규칙
+- `ip-guard-spring`: Spring 어댑터
+- `ip-guard-spring-boot-starter`: 소비 진입점
 
 ## 제외 범위
 
@@ -35,4 +36,4 @@
 2. [docs/architecture.md](docs/architecture.md)
 3. [docs/modules.md](docs/modules.md)
 4. [docs/extension-guide.md](docs/extension-guide.md)
-
+5. [docs/access-flow.md](docs/access-flow.md)

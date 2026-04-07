@@ -1,53 +1,29 @@
 # oss-contract
 
-- 현재 존재하는 1계층 OSS 레포들과, 앞으로 만들 2계층 platform 구조의 관계를 한 곳에서 관리한다.
-- 앞으로 만들어질 3계층 service 구조와의 관계까지 함께 관리한다.
-- 공통 계약과 경계 규칙을 하나의 SOT로 둔다.
-- 어떤 OSS가 어떤 platform으로 흡수되는지 기준을 고정한다.
-- 2계층 platform은 실제 서비스 서버들이 `service-contract` 기준으로 소비하는 기반 계층이다.
+1계층 OSS와 2계층 platform의 계약과 경계 규칙을 관리하는 SOT 입니다.
+
+운영 원칙과 작업 규칙은 [AGENTS.md](AGENTS.md)를 따른다.
+
+## 디렉터리 역할
+
+- `registry`: 1계층/2계층 현황, 빌드·배포, 운영 기준을 담는다.
+- `repositories`: 1계층 OSS와 2계층 platform의 레포 묶음과 역할을 담는다.
+- `sync-final`: 최종 동기화 기준 문서와 대상 레포 초안을 담는다.
+- `sync-drafts`: 아직 조정 중인 초안 문서를 담는다.
+- `sync-templates`: 새 문서를 만들 때 복사하는 템플릿을 담는다.
 
 ## 시작점
 
 1. [registry/README.md](registry/README.md)
-2. [registry/layers.md](registry/layers.md)
-3. [registry/mapping.md](registry/mapping.md)
-4. [registry/dependency-rules.md](registry/dependency-rules.md)
-5. [registry/repo-roles.md](registry/repo-roles.md)
-6. [registry/current-oss.md](registry/current-oss.md)
-7. [registry/future-platforms.md](registry/future-platforms.md)
-8. [registry/service-layer.md](registry/service-layer.md)
-9. [registry/service-contract.md](registry/service-contract.md)
-10. [registry/sync-order.md](registry/sync-order.md)
-11. [registry/access-procedure.md](registry/access-procedure.md)
-12. [registry/github-local-approach.md](registry/github-local-approach.md)
-13. [registry/layer1-structure.md](registry/layer1-structure.md)
-14. [registry/layer1-module-policy.md](registry/layer1-module-policy.md)
-15. [registry/layer1-build-standard.md](registry/layer1-build-standard.md)
-16. [registry/layer1-workflow-standard.md](registry/layer1-workflow-standard.md)
-17. [registry/versioning-standard.md](registry/versioning-standard.md)
-18. [registry/notification-policy.md](registry/notification-policy.md)
-19. [registry/final-apply-order.md](registry/final-apply-order.md)
-20. [registry/operation-rules.md](registry/operation-rules.md)
-21. [registry/apply-guide.md](registry/apply-guide.md)
-22. [registry/release-execution-order.md](registry/release-execution-order.md)
-22. [repositories/README.md](repositories/README.md)
-23. [repositories/auth.md](repositories/auth.md)
-24. [repositories/ip-guard.md](repositories/ip-guard.md)
-25. [repositories/rate-limiter.md](repositories/rate-limiter.md)
-26. [repositories/audit-log.md](repositories/audit-log.md)
-27. [repositories/policy-config.md](repositories/policy-config.md)
-28. [repositories/plugin-policy-engine.md](repositories/plugin-policy-engine.md)
-29. [repositories/file-storage-module.md](repositories/file-storage-module.md)
-30. [repositories/notification.md](repositories/notification.md)
-31. [repositories/platform-security.md](repositories/platform-security.md)
-32. [repositories/platform-governance.md](repositories/platform-governance.md)
-33. [repositories/platform-storage.md](repositories/platform-storage.md)
-34. [repositories/service-contract.md](repositories/service-contract.md)
-35. [CONTRACT_SYNC.md](CONTRACT_SYNC.md)
-36. [sync-templates/auth/CONTRACT_SYNC.md](sync-templates/auth/CONTRACT_SYNC.md)
-
-## 원칙
-
-- 구현은 이 레포에 두지 않는다.
-- 계약과 경계 규칙만 이 레포에서 관리한다.
-- private 플랫폼의 내부 문서는 별도 레포에서 관리한다.
+2. [registry/layer1-status.md](registry/layer1-status.md)
+3. [registry/layer1-gradle-properties.md](registry/layer1-gradle-properties.md)
+4. [registry/layer1-ci-cd.md](registry/layer1-ci-cd.md)
+5. [registry/layer1-maven-central.md](registry/layer1-maven-central.md)
+6. [registry/layer1-checklist.md](registry/layer1-checklist.md)
+7. [registry/layer2-status.md](registry/layer2-status.md)
+8. [repositories/README.md](repositories/README.md)
+9. [sync-final/platform-security/README.md](sync-final/platform-security/README.md)
+10. [sync-final/platform-governance/README.md](sync-final/platform-governance/README.md)
+11. [sync-final/platform-resource/README.md](sync-final/platform-resource/README.md)
+12. [sync-templates/platform-security/auth/CONTRACT_SYNC.md](sync-templates/platform-security/auth/CONTRACT_SYNC.md)
+13. [CONTRACT_SYNC.md](CONTRACT_SYNC.md)

@@ -10,17 +10,19 @@
 - 정책 조합
 - Spring 연동
 
-## 기준
-
-- 공통 계약과 경계 규칙은 [oss-contract](https://github.com/jho951/oss-contract)를 따른다.
-- 실제 서비스 서버의 계약은 [service-contract](https://github.com/jho951/service-contract)를 따른다.
-
 ## 권장 모듈
 
 - `plugin-policy-engine-core`
 - `plugin-policy-engine-spring`
 - `plugin-policy-engine-spring-boot-starter`
 - `plugin-policy-engine-common-test`
+
+## 모듈 설명
+
+- `plugin-policy-engine-core`: 정책 평가와 조합
+- `plugin-policy-engine-spring`: Spring 어댑터
+- `plugin-policy-engine-spring-boot-starter`: 소비 진입점
+- `plugin-policy-engine-common-test`: 테스트 지원
 
 ## 제외 범위
 
@@ -35,4 +37,4 @@
 2. [docs/architecture.md](docs/architecture.md)
 3. [docs/modules.md](docs/modules.md)
 4. [docs/extension-guide.md](docs/extension-guide.md)
-
+5. [docs/evaluation-model.md](docs/evaluation-model.md)

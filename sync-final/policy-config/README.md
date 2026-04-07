@@ -11,17 +11,19 @@
 - 타입 안전한 정책 키 조회
 - Spring 연동
 
-## 기준
-
-- 공통 계약과 경계 규칙은 [oss-contract](https://github.com/jho951/oss-contract)를 따른다.
-- 실제 서비스 서버의 계약은 [service-contract](https://github.com/jho951/service-contract)를 따른다.
-
 ## 권장 모듈
 
 - `policy-config-core`
 - `policy-config-spring`
 - `policy-config-spring-boot-starter`
 - `policy-config-common-test`
+
+## 모듈 설명
+
+- `policy-config-core`: 정책 키와 조회 규칙
+- `policy-config-spring`: Spring 어댑터
+- `policy-config-spring-boot-starter`: 소비 진입점
+- `policy-config-common-test`: 테스트 지원
 
 ## 제외 범위
 
@@ -36,4 +38,4 @@
 2. [docs/architecture.md](docs/architecture.md)
 3. [docs/modules.md](docs/modules.md)
 4. [docs/extension-guide.md](docs/extension-guide.md)
-
+5. [docs/source-resolution.md](docs/source-resolution.md)
