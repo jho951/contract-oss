@@ -1,25 +1,39 @@
 # SOT Registry
 
-이 레포는 구현 코드를 담지 않고, 계층 경계와 계약만 관리한다.
+`registry`는 계층 기준과 운영 규칙의 중앙 기준이다.
 
-## Core Docs
+## 1계층
 
-- [layer1-status.md](layer1-status.md): 1계층 현황과 운영 절차
-- [layer1-gradle-properties.md](layer1-gradle-properties.md): 1계층 gradle.properties 표준
-- [layer1-ci-cd.md](layer1-ci-cd.md): 1계층 CI/CD 표준
-- [layer1-maven-central.md](layer1-maven-central.md): 1계층 Maven Central 구조 표준
-- [layer1-checklist.md](layer1-checklist.md): 1계층 공통 점검표
-- [layer2-status.md](layer2-status.md): 2계층 현황과 운영 절차
+- [layer1/README.md](layer1/README.md): 1계층 OSS 기준과 운영 절차
+- [layer1/properties-standard.md](layer1/properties-standard.md): 1계층 gradle.properties 표준과 템플릿
+- [layer1/build-gradle.md](layer1/build-gradle.md): 1계층 build.gradle 구조 기준
+- [layer1/settings-gradle.md](layer1/settings-gradle.md): 1계층 settings.gradle 구조 기준
+- [layer1/ci-cd.md](layer1/ci-cd.md): 1계층 CI/CD와 publish.yml 구조 기준
+- [layer1/maven-central.md](layer1/maven-central.md): 1계층 Maven Central 구조 표준
+- [layer1/repository-readme.md](layer1/repository-readme.md): 1계층 README 구조 기준
+- [layer1/docs-structure.md](layer1/docs-structure.md): 1계층 docs 구조 기준
+- [layer1/checklist.md](layer1/checklist.md): 1계층 공통 점검표
 
-## Catalog
+## 2계층
+
+- [layer2/README.md](layer2/README.md): 2계층 platform 기준과 운영 절차
+- [layer2/build-gradle.md](layer2/build-gradle.md): 2계층 build.gradle 구조 기준
+- [layer2/settings-gradle.md](layer2/settings-gradle.md): 2계층 settings.gradle 구조 기준
+- [layer2/ci-cd.md](layer2/ci-cd.md): 2계층 CI/CD와 publish 구조 기준
+- [layer2/docs-structure.md](layer2/docs-structure.md): 2계층 docs 구조 기준
+- [layer2/checklist.md](layer2/checklist.md): 2계층 공통 점검표
+- [layer2/platform-security-standard.md](layer2/platform-security-standard.md): platform-security 표준 구조와 경계 규칙
+
+## 카탈로그
 
 - [repositories/README.md](../repositories/README.md): 레포 카탈로그 진입점
-- [repositories/layer1.md](../repositories/layer1.md): 1계층 OSS 묶음
-- [repositories/layer2.md](../repositories/layer2.md): 2계층 platform 묶음
+- [repositories/layer1/README.md](../repositories/layer1/README.md): 1계층 OSS 묶음
+- [repositories/layer2/README.md](../repositories/layer2/README.md): 2계층 platform 묶음
 
-## Rules
+## 규칙
 
 - 1계층 레포 문서에는 계층 매핑을 반복하지 않는다.
-- 1계층 OSS는 기능별 책임과 published artifact 경계만 가진다.
-- platform 레포는 1계층 published artifact의 exact version만 pin 한다.
+- 1계층 OSS는 순수 기능 모듈의 본질, 규칙, 계약만 가진다.
+- 2계층 platform은 서비스가 붙는 조립 계층이다.
+- 3계층 application은 실제 애플리케이션이라는 개념이다.
 - public 문서는 역할과 경계를, registry는 SOT와 규칙을 담는다.
