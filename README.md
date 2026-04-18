@@ -1,7 +1,7 @@
 # oss-contract
 
 - 1계층 OSS는 순수 기능 모듈이다.
-- 2계층 platform은 서비스가 붙는 조립 계층이다.
+- 2계층 platform은 소비 애플리케이션이 붙는 조립 계층이다.
 
 ## 디렉터리 역할
 
@@ -13,6 +13,7 @@
 1. [registry/README.md](registry/README.md)
 2. [registry/layer1/README.md](registry/layer1/README.md)
 3. [registry/layer2/README.md](registry/layer2/README.md)
-4. [repositories/README.md](repositories/README.md)
-5. [repositories/layer1/README.md](repositories/layer1/README.md)
-6. [repositories/layer2/README.md](repositories/layer2/README.md)
+4. [registry/layer2/platform-integrations-standard.md](registry/layer2/platform-integrations-standard.md)
+5. [repositories/README.md](repositories/README.md)
+6. [repositories/layer1/README.md](repositories/layer1/README.md)
+7. [repositories/layer2/README.md](repositories/layer2/README.md)

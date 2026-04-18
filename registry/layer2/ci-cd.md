@@ -18,11 +18,6 @@
   publish.yml
 ```
 
-## 현재 확인된 차이
-
-- `platform-resource`에는 `.github/workflows/build.yml`이 없다.
-- `platform-security`, `platform-governance`는 `build.yml`, `publish.yml`을 가진다.
-
 ## build.yml 기준
 
 - `./gradlew clean test` 또는 동등한 검증을 수행한다.
@@ -35,10 +30,11 @@
 - version은 tag 또는 release input에서 주입한다.
 - build/test 성공 후 publish한다.
 - credential 없이 실행되지 않아야 한다.
+- bridge module은 module 단위 publish를 허용할 수 있다.
 
 ## 금지
 
 - branch push에서 publish 수행
 - default CI에서 local layer1 source에만 의존
 - publish credential을 일반 build job에 요구
-- workflow에 서비스별 배포 정책 섞기
+- workflow에 소비자별 배포 정책 섞기

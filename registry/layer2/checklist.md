@@ -1,17 +1,15 @@
 # 2계층 공통 점검표
 
+이 문서는 기준을 다시 정의하지 않는다.
+각 항목은 기준 소유 문서가 적용됐는지만 확인한다.
+
 ## 구조 점검
 
 - [ ] `README.md`가 있다.
-- [ ] `build.gradle`이 있다.
-- [ ] `settings.gradle`이 있다.
-- [ ] `gradle/`, `gradlew`, `gradlew.bat`이 있다.
-- [ ] `.github/workflows/build.yml`이 있다.
-- [ ] `.github/workflows/publish.yml`이 있다.
-- [ ] `docs/README.md`가 있다.
-- [ ] `docs/architecture.md`가 있다.
-- [ ] `docs/modules.md`가 있다.
-- [ ] `docs/extension-guide.md`가 있다.
+- [ ] `build.gradle` 구조는 [build-gradle.md](build-gradle.md)를 따른다.
+- [ ] `settings.gradle` 구조는 [settings-gradle.md](settings-gradle.md)를 따른다.
+- [ ] CI/CD 구조는 [ci-cd.md](ci-cd.md)를 따른다.
+- [ ] docs 구조는 [docs-structure.md](docs-structure.md)를 따른다.
 
 ## 제거 점검
 
@@ -24,27 +22,21 @@
 
 ## 의존성 점검
 
-- [ ] 1계층 OSS 의존성은 exact version으로 pin되어 있다.
-- [ ] dynamic version, version range, `latest.release`, `+` 참조가 없다.
-- [ ] local layer1 substitution은 명시적 option으로만 활성화된다.
-- [ ] 기본 build는 published artifact 기준으로 동작한다.
+- [ ] 의존성 기준은 [build-gradle.md](build-gradle.md)를 따른다.
+- [ ] local layer1 substitution 기준은 [settings-gradle.md](settings-gradle.md)를 따른다.
 
 ## 모듈 점검
 
-- [ ] `settings.gradle` module 목록이 README / docs와 일치한다.
-- [ ] BOM, API/SPI, core, adapter, autoconfigure, starter 역할이 섞이지 않는다.
-- [ ] sample consumer는 내부 검증용으로 분리되어 있다.
-- [ ] test support는 production 공개 표면과 분리되어 있다.
+- [ ] module 선언 기준은 [settings-gradle.md](settings-gradle.md)를 따른다.
+- [ ] build module 책임 분리는 [build-gradle.md](build-gradle.md)를 따른다.
 
 ## 책임 점검
 
-- [ ] 1계층 내부 구현을 재정의하지 않는다.
-- [ ] 서비스 비즈니스 로직을 포함하지 않는다.
-- [ ] 도메인 권한 판단을 포함하지 않는다.
-- [ ] 3계층 application이 소비할 integration API가 분명하다.
+- [ ] 공통 책임 경계는 [README.md](README.md)를 따른다.
+- [ ] platform별 책임 경계는 해당 platform 표준 문서를 따른다.
 
 ## 레포별 특화 점검
 
-- [ ] `platform-security`: 역할별 starter와 security pipeline 경계가 명확하다.
-- [ ] `platform-governance`: audit/config/engine 조립 경계가 명확하다.
-- [ ] `platform-resource`: resource owner/kind/catalog/lifecycle 경계가 명확하다.
+- [ ] `platform-security`는 [platform-security-standard.md](platform-security-standard.md)를 따른다.
+- [ ] `platform-integrations`는 [platform-integrations-standard.md](platform-integrations-standard.md)를 따른다.
+- [ ] 나머지 platform별 현재 상태는 [../../repositories/layer2/README.md](../../repositories/layer2/README.md)에 기록한다.

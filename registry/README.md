@@ -23,6 +23,7 @@
 - [layer2/docs-structure.md](layer2/docs-structure.md): 2계층 docs 구조 기준
 - [layer2/checklist.md](layer2/checklist.md): 2계층 공통 점검표
 - [layer2/platform-security-standard.md](layer2/platform-security-standard.md): platform-security 표준 구조와 경계 규칙
+- [layer2/platform-integrations-standard.md](layer2/platform-integrations-standard.md): platform 간 선택 bridge 표준 구조와 경계 규칙
 
 ## 카탈로그
 
@@ -35,5 +36,4 @@
 - 1계층 레포 문서에는 계층 매핑을 반복하지 않는다.
 - 1계층 OSS는 순수 기능 모듈의 본질, 규칙, 계약만 가진다.
 - 2계층 platform은 서비스가 붙는 조립 계층이다.
-- 3계층 application은 실제 애플리케이션이라는 개념이다.
 - public 문서는 역할과 경계를, registry는 SOT와 규칙을 담는다.
