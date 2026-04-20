@@ -20,6 +20,10 @@ platform 책임에 따라 아래 문서를 추가할 수 있다.
 - `usage.md`
 - `private-publish.md`
 - platform별 모델 문서
+- `quality-gates.md`
+- `release-notes.md`
+- `integration-ownership.md`
+- `examples/*.md`
 - troubleshooting 문서
 
 ## 작성 기준

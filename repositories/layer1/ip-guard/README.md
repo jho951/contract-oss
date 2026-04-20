@@ -14,6 +14,7 @@
 - SPI
 - IP / rule 파싱과 매칭
 - 결정 엔진
+- IPv4/IPv6 single, CIDR, range, IPv4 wildcard 규칙 문법
 
 ## 현재 모듈
 
@@ -26,6 +27,7 @@
 - `docs/README.md`
 - `docs/architecture.md`
 - `docs/modules.md`
+- `docs/rule-syntax.md`
 - `docs/extension-guide.md`
 - `docs/test-and-ci.md`
 - `docs/troubleshooting.md`

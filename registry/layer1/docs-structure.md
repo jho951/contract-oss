@@ -26,7 +26,7 @@ docs/
 레포별 책임을 설명하기 위해 필요한 경우에만 추가한다.
 
 - `auth`: 인증 수단, principal / token / session, 구현 가이드
-- `ip-guard`: access flow, rule matching
+- `ip-guard`: access flow, rule syntax, rule matching
 - `rate-limiter`: core / spi 계약
 - `audit-log`: event schema, sink, masking
 - `policy-config`: source resolution

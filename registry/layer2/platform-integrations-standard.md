@@ -7,6 +7,7 @@
 - `platform-security`, `platform-resource`, `platform-governance`처럼 이미 독립적인 platform 사이의 선택 연결을 관리한다.
 - 본체 platform이 서로를 필수 의존성으로 끌어안지 않도록 bridge를 별도 artifact로 분리한다.
 - 소비자가 필요한 연결만 명시적으로 추가할 수 있게 한다.
+- 외부 SaaS/API 연동 platform이 아니라 platform-to-platform bridge layer의 경계를 고정한다.
 
 ## 계층 원칙
 
@@ -17,6 +18,7 @@
 - bridge는 소비자 비즈니스 로직, 도메인 권한 판단, 소비자별 policy key를 포함하지 않는다.
 - bridge는 본체 platform의 release 단위와 독립적으로 release할 수 있다.
 - bridge는 두 platform을 모두 쓰는 소비자가 `implementation`으로 명시할 때만 활성화된다.
+- bridge는 source/target platform을 대신 enable하지 않는다.
 
 ## 현재 모듈 기준
 
@@ -47,6 +49,7 @@
 - 소비자별 audit taxonomy 하드코딩
 - 소비자별 권한 판단
 - bridge가 본체 platform을 대신 enable하는 자동 조립
+- 외부 vendor 연동 client/platform
 
 ## 정합성 기준
 
@@ -64,3 +67,4 @@
 - "두 platform을 모두 쓰는 소비자에게만 필요한 연결"이면 bridge가 맞다.
 - "source platform의 핵심 실행 흐름 자체"라면 bridge가 아니라 source platform 본체 책임이다.
 - "소비자 도메인에 따라 의미가 달라지는 audit 분류"라면 bridge가 아니라 소비자 override 책임이다.
+- "외부 시스템 연동을 위한 client/adapter"라면 `platform-integrations` 책임이 아니다.

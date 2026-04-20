@@ -17,6 +17,8 @@
 - 확장은 `properties`, `customizer`, `override bean`, 단일 starter, service role preset을 통해 제공한다.
 - 현재 소비 진입점은 단일 `platform-security-starter`와 `platform.security.service-role-preset`이다.
 - 2계층은 소비자별 비즈니스 로직, 도메인 권한 판단, 회원가입, 로그인 화면, 특정 URL, Redis key 규칙을 포함하지 않는다.
+- `policy-config`, audit pipeline, feature flag config 호환 기준의 owner는 `platform-governance`다.
+- `platform-security`는 보안 평가와 보안 event/publisher 계약을 소유하고, governance audit 기록 구현은 소유하지 않는다.
 
 ## 1계층 조립 기준
 
@@ -53,6 +55,8 @@
 
 - boundary / client type / auth mode / evaluation result 모델
 - authentication / IP guard / rate limit 실행 체인
+- Spring Security resource server 기본 조립
+- gateway header 기반 인증 조립
 - downstream identity propagation
 - Spring Boot auto-configuration
 - 단일 starter와 service role preset
@@ -60,6 +64,20 @@
 - 소비자별 override point
 - 실패 응답 표준화
 - governance audit 연동을 위한 공개 `SecurityAuditPublisher` 계약
+
+## Spring Security 기본 조립 기준
+
+- `platform-security`는 기본 `JwtDecoder`를 제공한다.
+- 기본 `JwtDecoder`는 `platform.security.auth.jwt-secret`, `platform.security.auth.jwt-issuer`, `platform.security.auth.jwt-audience` 설정으로 HMAC JWT 검증을 구성한다.
+- `platform-security`는 기본 `JwtAuthenticationConverter`를 제공한다.
+- 기본 JWT authority 변환은 `role`, `roles`, `scope`, `scp`, `status` claim을 사용한다.
+- `status=A`는 `STATUS_A`와 함께 `STATUS_ACTIVE` authority로 표현한다.
+- gateway header 인증은 `platform.security.auth.gateway-header.enabled=true`일 때 활성화한다.
+- gateway header 인증은 `X-User-Id`, `X-User-Status`를 읽어 Spring Security `Authentication`을 만든다.
+- gateway header 인증 filter는 `FilterRegistrationBean#setEnabled(false)`로 Boot servlet filter 중복 등록을 막고 Spring Security filter chain 안에서만 동작해야 한다.
+- 401/403 응답은 기본 `AuthenticationEntryPoint`, `AccessDeniedHandler`를 통해 `SecurityFailureResponseWriter` 흐름으로 연결한다.
+- servlet filter 순서는 `BearerTokenAuthenticationFilter` 뒤에 gateway header 인증 filter를 두고, 그 뒤에 `PlatformSecurityServletFilter`를 둔다.
+- gateway header 인증 filter가 없으면 `PlatformSecurityServletFilter`는 `BearerTokenAuthenticationFilter` 뒤에 둔다.
 
 ## 포함하지 말아야 할 것
 
@@ -72,6 +90,9 @@
 - 특정 소비자 URL 하드코딩
 - 특정 소비자 Redis key 규칙
 - 1계층 OSS 내부 구현 재정의
+- 소비자 서비스별 `JwtDecoder` 직접 조립
+- 소비자 서비스별 JWT authority converter 직접 조립
+- 소비자 서비스별 gateway header authentication filter/principal 직접 조립
 
 ## 확장 규칙
 
@@ -80,6 +101,8 @@
 - 1계층 내부 구현을 2계층에서 재정의하지 않는다.
 - starter 추가는 역할이 분명할 때만 허용한다.
 - governance audit bridge는 `platform-security` 본체가 아니라 `platform-integrations`에서 제공한다.
+- `platform-security` 본체는 `platform-governance` 구현체를 직접 의존하지 않는다.
+- 소비자 서비스가 직접 인증 조립을 override할 때도 public bean override 경계를 사용하고 platform filter 순서를 깨지 않는다.
 
 ## 운영 기준
 
@@ -87,5 +110,6 @@
 - 2계층은 external OSS처럼 외부 semver 호환성을 약속하지 않는다.
 - 운영에서는 trusted proxy CIDR, admin/internal IP rule, 공유 `RateLimiter`, production `SecurityContextResolver`를 fail-fast로 요구한다.
 - 기본 in-memory rate limiter와 dev fallback resolver는 local/test용으로 본다.
+- 소비자 서비스의 DB 상태 확인, 업무 권한 판단, endpoint별 도메인 정책은 `platform-security`가 아니라 소비자 서비스 책임이다.
 - 변경은 문서, build, workflow를 한 단위로 맞춘다.
 - 레포별 공개 문서는 이 표준의 경계를 반복 구현하지 않고 필요한 소비 기준만 적는다.

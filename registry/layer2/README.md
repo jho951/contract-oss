@@ -15,23 +15,38 @@
 - 2계층은 platform 소비자가 쉽게 가져다 쓸 수 있는 integration API를 제공한다.
 - 2계층 API는 최종 비즈니스 API가 아니다.
 - platform 분류는 책임 축으로 정한다.
+- `platform-security`, `platform-governance`, `platform-resource`는 서비스가 직접 소비하는 runtime platform이다.
+- `platform-integrations`는 서비스 기본 탑재 대상이 아니라 platform 사이의 선택 연결을 제공하는 bridge layer다.
 
 ## 축 요약
 
 | 축 | 흡수 대상 | 핵심 책임 |
 | --- | --- | --- |
 | Platform Security | `auth`, `ip-guard`, `rate-limiter` | 요청 진입 보안 파이프라인, boundary, auth mode, IP guard, rate limit |
-| Platform Governance | `audit-log`, `policy-config`, `plugin-policy-engine` | 구조화 감사, 정책 설정 조회, 정책 평가 엔진 조립 |
+| Platform Governance | `audit-log`, `policy-config`, `plugin-policy-engine-config` 호환 | 구조화 감사, 정책 설정 조회, platform `GovernancePolicyPlugin` chain, feature flag config 기준 |
 | Platform Resource | `file-storage`, `notification` | resource owner/kind/catalog, 저장/삭제 lifecycle, notification orchestration |
 | Platform Integrations | platform 간 optional bridge | security/resource event를 governance audit으로 연결하는 optional integration platform |
+
+## 소비 성격
+
+| 구분 | 대상 | 소비 기준 |
+| --- | --- | --- |
+| 실행 플랫폼 | `platform-security`, `platform-governance`, `platform-resource` | 서비스가 starter/BOM을 직접 소비하고 내부 조립을 대체한다. |
+| 연결 플랫폼 | `platform-integrations` | 두 platform을 모두 쓰고 event를 다른 platform 책임으로 전달해야 할 때만 bridge artifact를 추가한다. |
 
 ## 실무 판단 기준
 
 - 요청 입구에서 주체, boundary, 통과/차단 여부를 판단하면 `platform-security` 책임이다.
-- 요청이나 운영 사건을 감사로 남기고, 정책 값을 조회하고, 정책 평가/위반 대응을 표준화하면 `platform-governance` 책임이다.
+- 요청이나 운영 사건을 감사로 남기고, 정책 값을 조회하고, platform `GovernancePolicyPlugin` chain과 위반 대응을 표준화하면 `platform-governance` 책임이다.
 - 파일이나 리소스에 owner, kind, catalog, 접근, 삭제, lifecycle event가 필요하면 `platform-resource` 책임이다.
 - 이미 발생한 security/resource event를 governance audit으로 이어 붙이는 것처럼 두 platform 사이의 선택 연결이면 `platform-integrations` 책임이다.
 - 업무 승인, 게시글 권한, workspace membership 같은 도메인 사실 판단은 platform 책임이 아니다.
+- `policy-config`, audit pipeline, feature flag config 호환 기준의 owner는 `platform-governance`다.
+- `platform-governance`는 `plugin-policy-engine` 전체 runtime을 흡수하지 않고, `plugin-policy-engine-config` 호환 기준과 BOM 정렬 대상으로만 둔다.
+- `platform-resource`는 file wrapper가 아니라 resource 저장, metadata/catalog, lifecycle event, notification orchestration을 묶는 runtime platform이다.
+- `platform-resource`가 lifecycle event를 발행하는 것은 본체 책임이고, 그 event를 governance audit으로 기록하는 것은 `platform-integrations` 책임이다.
+- `platform-security`나 `platform-resource`가 `platform-governance` 구현체를 직접 의존하면 bridge 경계를 위반한 것으로 본다.
+- `platform-integrations`가 source/target platform을 대신 enable하거나 내부 구현 class를 직접 참조하면 bridge 경계를 위반한 것으로 본다.
 
 ## 기본 원칙
 
@@ -55,6 +70,8 @@
 | [ci-cd.md](ci-cd.md) | `.github/workflows` build/publish 기준 | Gradle plugin/module 구조 |
 | [docs-structure.md](docs-structure.md) | platform repo의 docs 구조 기준 | build/workflow 기준 |
 | [platform-security-standard.md](platform-security-standard.md) | `platform-security` 전용 책임과 경계 | 다른 platform 공통 기준 |
+| [platform-governance-standard.md](platform-governance-standard.md) | `platform-governance` 전용 책임과 경계 | 다른 platform 공통 기준 |
+| [platform-resource-standard.md](platform-resource-standard.md) | `platform-resource` 전용 책임과 경계 | 다른 platform 공통 기준 |
 | [platform-integrations-standard.md](platform-integrations-standard.md) | `platform-integrations` 전용 책임과 bridge ownership | 본체 platform 구현 기준 |
 | [checklist.md](checklist.md) | 위 기준 문서의 적용 여부 확인 | 기준 문장 재정의 |
 

@@ -38,5 +38,7 @@
 ## 레포별 특화 점검
 
 - [ ] `platform-security`는 [platform-security-standard.md](platform-security-standard.md)를 따른다.
+- [ ] `platform-governance`는 [platform-governance-standard.md](platform-governance-standard.md)를 따른다.
+- [ ] `platform-resource`는 [platform-resource-standard.md](platform-resource-standard.md)를 따른다.
 - [ ] `platform-integrations`는 [platform-integrations-standard.md](platform-integrations-standard.md)를 따른다.
-- [ ] 나머지 platform별 현재 상태는 [../../repositories/layer2/README.md](../../repositories/layer2/README.md)에 기록한다.
+- [ ] platform별 현재 상태는 [../../repositories/layer2/README.md](../../repositories/layer2/README.md)에 기록한다.

@@ -1,8 +1,10 @@
-# build.gradle 구조 기준 - 1계층 OSS
+# build.gradle 구조
 
-1계층 OSS 레포의 `build.gradle`은 Maven Central publish 가능한 Java library 구조를 기준으로 한다.
+> Maven Central publish 가능한 Java library 구조를 기준으로 합니다.
 
-## 공통 plugin
+## 공통 값
+
+### plugin
 
 ```groovy
 plugins {
@@ -12,14 +14,14 @@ plugins {
 }
 ```
 
-## 공통 값
+### 값
 
 ```groovy
 group = findProperty('release_group')
 version = findProperty('release_version')
 ```
 
-## Java 설정
+### Java 설정
 
 ```groovy
 java {
@@ -47,9 +49,7 @@ java {
 
 ## 금지
 
-- version 하드코딩
-- group 하드코딩
-- SCM URL 하드코딩
+- version, group, SCM URL 하드코딩
 - 레포별로 다른 publish metadata 구조 만들기
 - branch CI에서 signing secret 요구하기
 - 생성 산출물을 publish source에 포함하기

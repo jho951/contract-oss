@@ -3,7 +3,7 @@
 ## 기준
 
 - GitHub: https://github.com/jho951/policy-config
-- Version: `2.0.0`
+- Version: `1.0.1`
 - 계층: 1계층 OSS
 - registry 기준: [../../../registry/layer1/README.md](../../../registry/layer1/README.md)
 
