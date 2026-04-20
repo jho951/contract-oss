@@ -6,7 +6,7 @@
 - Version: `1.0.1`
 - 계층: 2계층 optional integration platform
 - registry 기준: [../../../registry/layer2/README.md](../../../registry/layer2/README.md)
-- platform 표준: [../../../registry/layer2/platform-integrations-standard.md](../../../registry/layer2/platform-integrations-standard.md)
+- platform 표준: [../../../registry/layer2/standards/platform-integrations.md](../../../registry/layer2/standards/platform-integrations.md)
 
 ## 흡수 대상
 
@@ -32,6 +32,16 @@
 - `README.md`
 - `docs/README.md`
 - `docs/ownership.md`
+
+## README / 문서 기준
+
+- 공개 좌표는 실제 publish artifact와 일치해야 한다.
+- 흡수 대상은 1계층 기준 버전과 충돌하지 않아야 한다.
+- `무엇을 제공하나`는 `settings.gradle` include 목록과 일치해야 한다.
+- 책임 경계에는 platform 조립 책임과 소비자 비즈니스 책임을 명확히 나눈다.
+- `platform-integrations`는 optional bridge 성격을 README에서 명시한다.
+- docs는 bridge 목적, 소비 의존성, publish 단위를 중심으로 둔다.
+- 소비자별 비즈니스 정책이나 도메인 권한 판단을 platform 책임처럼 설명하지 않는다.
 
 ## 현재 version pin
 

@@ -14,3 +14,7 @@
 ## 문서
 - [layer1/README.md](layer1/README.md): 1계층 OSS 기준과 운영 절차
 - [layer2/README.md](layer2/README.md): 2계층 platform 기준과 운영 절차
+- Layer1 레포별 책임 표준은 `registry/layer1/standards/`가 소유한다.
+- Layer2 platform별 책임 표준은 `registry/layer2/standards/`가 소유한다.
+- build, settings, Gradle properties 기준은 각 계층의 `structure/`가 소유한다.
+- CI/CD, publish, checklist 기준은 각 계층의 `operations/`가 소유한다.

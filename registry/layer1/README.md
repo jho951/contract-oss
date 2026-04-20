@@ -37,32 +37,22 @@ docs/
   build.gradle
 ```
 
-## 현재 구조에서 확인된 차이
+## 정리 기준
 
-- `notification`에는 `CONTRACT_SYNC.md`가 남아 있다.
-- `policy-config`, `notification`에는 `.gradle`, `.idea`가 tag tree에 포함되어 있다.
-- `audit-log`에는 `build` 디렉터리가 tag tree에 포함되어 있다.
-- PR 템플릿 파일명이 `pull_request_template.md`와 `Pull_request_template.md`로 섞여 있다.
-- 테스트/CI 문서명이 `testing-and-ci.md`와 `test-and-ci.md`로 섞여 있다.
-- `audit-log` docs에는 대문자 문서명(`ARCHITECTURE.md`, `CONFIGURATION.md`, `RUNBOOK.md`, `TROUBLESHOOTING.md`, `USAGE.md`)이 섞여 있다.
-
-## 제거 대상
-
-1계층 OSS 레포에는 아래 파일과 디렉터리를 두지 않는다.
-
-- `CONTRACT_SYNC.md`
-- `.gradle/`
-- `.idea/`
-- `build/`
-- 레포 루트의 생성 산출물
-- SOT와 충돌하는 별도 계약 문서
+- tag tree에는 source, docs, Gradle wrapper, GitHub 운영 파일만 둔다.
+- IDE 설정, Gradle 캐시, 생성 산출물, 내부 동기화 문서는 포함하지 않는다.
+- PR 템플릿 파일명은 `.github/pull_request_template.md`로 통일한다.
+- 테스트/CI 문서명은 `docs/test-and-ci.md`로 통일한다.
+- docs 파일명은 소문자 kebab-case로 통일한다.
 
 ## 책임 기준
 
 - 1계층 OSS는 순수 기능 모듈의 본질, 규칙, 계약을 정의한다.
 - 1계층 OSS는 2계층 platform이 조립할 published artifact를 제공한다.
-- 1계층 OSS는 직접 consumer-facing platform이 아니다.
-- Spring Boot starter, 서비스 정책, 도메인 권한 판단, platform 조립 책임은 1계층 OSS의 기본 책임이 아니다.
+- 1계층 OSS는 직접 가져다 쓰지 않습니다.
+- 1계층 OSS는 Spring Boot starter, 서비스 정책, 도메인 권한 판단, platform 조립 책임을 갖지 않습니다.
+- 레포별 책임 경계는 `standards/`가 소유한다.
+- `repositories/layer1/<repo>/README.md`는 실제 원격 레포의 현재 상태를 기록합니다.
 
 ## 반영 기준
 
@@ -74,11 +64,25 @@ docs/
 
 ## 기준 문서
 
-- [properties-standard.md](properties-standard.md): `gradle.properties` 표준
-- [build-gradle.md](build-gradle.md): `build.gradle` 구조 기준
-- [settings-gradle.md](settings-gradle.md): `settings.gradle` 구조 기준
-- [ci-cd.md](ci-cd.md): CI/CD 표준
-- [maven-central.md](maven-central.md): Maven Central publish 기준
-- [repository-readme.md](repository-readme.md): README 구조 기준
-- [docs-structure.md](docs-structure.md): docs 구조 기준
-- [checklist.md](checklist.md): 점검표
+### structure
+
+- [gradle-properties.md](structure/gradle-properties.md): `gradle.properties` 표준
+- [build-gradle.md](structure/build-gradle.md): `build.gradle` 구조 기준
+- [settings-gradle.md](structure/settings-gradle.md): `settings.gradle` 구조 기준
+
+### operations
+
+- [ci-cd.md](operations/ci-cd.md): CI/CD 표준
+- [maven-central.md](operations/maven-central.md): Maven Central publish 기준
+- [checklist.md](operations/checklist.md): 점검표
+
+### standards
+
+- [auth.md](standards/auth.md): `auth` 책임과 경계
+- [ip-guard.md](standards/ip-guard.md): `ip-guard` 책임과 경계
+- [rate-limiter.md](standards/rate-limiter.md): `rate-limiter` 책임과 경계
+- [audit-log.md](standards/audit-log.md): `audit-log` 책임과 경계
+- [policy-config.md](standards/policy-config.md): `policy-config` 책임과 경계
+- [plugin-policy-engine.md](standards/plugin-policy-engine.md): `plugin-policy-engine` 책임과 경계
+- [file-storage.md](standards/file-storage.md): `file-storage` 책임과 경계
+- [notification.md](standards/notification.md): `notification` 책임과 경계

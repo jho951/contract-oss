@@ -2,7 +2,7 @@
 
 > Maven Central publish 가능한 Java library 구조를 기준으로 합니다.
 
-## 공통 값
+## 공통
 
 ### plugin
 
@@ -33,21 +33,22 @@ java {
 }
 ```
 
-## publication 기준
+## 기준
 
+### publication
 - 모든 publish 대상 artifact는 Maven Central metadata를 가진다.
 - POM에는 name, description, url, license, developer, scm 정보를 채운다.
 - SCM 정보는 `github_org`, `github_repo`에서 조립한다.
 - 루트 publication을 두는 경우 실제 공개 좌표와 README를 일치시킨다.
 - 하위 모듈 publication은 `settings.gradle` include 목록과 일치해야 한다.
 
-## signing 기준
+### signing 
 
 - signing은 publish task가 실행될 때만 필요하다.
 - signing key와 password는 CI secret에서 주입한다.
 - secret 없이 일반 build/test가 깨지면 안 된다.
 
-## 금지
+### 금지
 
 - version, group, SCM URL 하드코딩
 - 레포별로 다른 publish metadata 구조 만들기

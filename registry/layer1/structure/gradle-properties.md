@@ -1,4 +1,4 @@
-# 1계층 gradle.properties 표준
+# gradle.properties
 
 `gradle.properties`는 1계층 OSS의 build, publish, SCM metadata에 필요한 공통 값을 둔다.
 

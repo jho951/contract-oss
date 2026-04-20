@@ -11,21 +11,25 @@
 - [ ] `gradle/`, `gradlew`, `gradlew.bat`이 있다.
 - [ ] `.github/workflows/build.yml`이 있다.
 - [ ] `.github/workflows/publish.yml`이 있다.
-- [ ] `docs/README.md`가 있다.
+- [ ] `docs/readme.md`가 있다.
 - [ ] `docs/architecture.md`가 있다.
 - [ ] `docs/modules.md`가 있다.
 - [ ] `docs/extension-guide.md`가 있다.
-- [ ] 테스트/CI 문서는 `docs/testing-and-ci.md`로 통일되어 있다.
+- [ ] docs 파일명은 소문자 `kebab-case`를 사용한다.
+- [ ] 테스트/CI 문서는 `docs/test-and-ci.md`로 통일되어 있다.
 - [ ] 트러블슈팅 문서는 `docs/troubleshooting.md`로 통일되어 있다.
+- [ ] 대문자 docs 파일명이 없다.
+- [ ] `docs/implementation-guide.md`는 레포 책임에 필요한 경우에만 둔다.
+- [ ] 레포별 특화 문서는 해당 OSS 표준의 책임 범위 안에 있다.
 - [ ] PR 템플릿은 `.github/pull_request_template.md`로 통일되어 있다.
 - [ ] 라이선스 파일은 `LICENSE`로 통일되어 있다.
 
 ## 제거 점검
 
-- [ ] `CONTRACT_SYNC.md`가 없다.
-- [ ] `.gradle/`이 없다.
-- [ ] `.idea/`가 없다.
-- [ ] `build/`가 없다.
+- [ ] 내부 계약 동기화 문서가 없다.
+- [ ] Gradle 캐시 디렉터리가 없다.
+- [ ] IDE 설정 디렉터리가 없다.
+- [ ] 생성 산출물 디렉터리가 없다.
 - [ ] 레포 루트에 생성 산출물이 없다.
 - [ ] SOT와 충돌하는 별도 계약 문서가 없다.
 
@@ -61,14 +65,14 @@
 
 ## 레포별 특화 점검
 
-- [ ] `auth`: API key, HMAC, OIDC, service account 모듈까지 문서에 반영되어 있다.
-- [ ] `ip-guard`: `ip-guard-core`, `ip-guard-spi`만 publish 범위로 둔다.
-- [ ] `rate-limiter`: `rate-limiter-core`, `rate-limiter-spi` publish 범위가 명확하다.
-- [ ] `audit-log`: `audit-log-api`, `audit-log-core` publish 범위가 명확하다.
-- [ ] `policy-config`: `contracts`, `core`, `builder` 책임이 분리되어 있다.
-- [ ] `plugin-policy-engine`: `api`, `core`, `config` 책임이 분리되어 있다.
-- [ ] `file-storage`: `api`, `core` 책임이 분리되어 있다.
-- [ ] `notification`: `api`, `core` 책임이 분리되어 있다.
+- [ ] `auth`는 [auth.md](../standards/auth.md)를 따른다.
+- [ ] `ip-guard`는 [ip-guard.md](../standards/ip-guard.md)를 따른다.
+- [ ] `rate-limiter`는 [rate-limiter.md](../standards/rate-limiter.md)를 따른다.
+- [ ] `audit-log`는 [audit-log.md](../standards/audit-log.md)를 따른다.
+- [ ] `policy-config`는 [policy-config.md](../standards/policy-config.md)를 따른다.
+- [ ] `plugin-policy-engine`은 [plugin-policy-engine.md](../standards/plugin-policy-engine.md)를 따른다.
+- [ ] `file-storage`는 [file-storage.md](../standards/file-storage.md)를 따른다.
+- [ ] `notification`은 [notification.md](../standards/notification.md)를 따른다.
 
 ## 판정 기준
 

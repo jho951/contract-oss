@@ -6,7 +6,7 @@
 - Version: `2.0.1`
 - 계층: 2계층 platform
 - registry 기준: [../../../registry/layer2/README.md](../../../registry/layer2/README.md)
-- platform 표준: [../../../registry/layer2/platform-governance-standard.md](../../../registry/layer2/platform-governance-standard.md)
+- platform 표준: [../../../registry/layer2/standards/platform-governance.md](../../../registry/layer2/standards/platform-governance.md)
 
 ## 흡수 대상
 
@@ -63,6 +63,15 @@
 - `docs/private-publish.md`
 - `docs/troubleshooting.md`
 - `docs/quality-gates.md`
+
+## README / 문서 기준
+
+- 공개 좌표는 실제 publish artifact와 일치해야 한다.
+- 흡수 대상은 1계층 기준 버전과 충돌하지 않아야 한다.
+- `무엇을 제공하나`는 `settings.gradle` include 목록과 일치해야 한다.
+- 책임 경계에는 platform 조립 책임과 소비자 비즈니스 책임을 명확히 나눈다.
+- docs는 platform 소비와 확장에 필요한 문서만 둔다.
+- 소비자별 비즈니스 정책이나 도메인 권한 판단을 platform 책임처럼 설명하지 않는다.
 
 ## 실무 기준
 

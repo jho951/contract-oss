@@ -65,15 +65,16 @@
 | 문서 | 책임 | 쓰지 않는 것 |
 | --- | --- | --- |
 | [README.md](README.md) | 2계층 정의, 책임 축, 문서 위치 | 세부 build/module/docs/workflow 규칙 |
-| [build-gradle.md](build-gradle.md) | `build.gradle`과 의존성/publish 구조 기준 | 실제 module 목록 |
-| [settings-gradle.md](settings-gradle.md) | `settings.gradle` module 선언과 local substitution 기준 | 의존성 version pin 규칙 |
-| [ci-cd.md](ci-cd.md) | `.github/workflows` build/publish 기준 | Gradle plugin/module 구조 |
-| [docs-structure.md](docs-structure.md) | platform repo의 docs 구조 기준 | build/workflow 기준 |
-| [platform-security-standard.md](platform-security-standard.md) | `platform-security` 전용 책임과 경계 | 다른 platform 공통 기준 |
-| [platform-governance-standard.md](platform-governance-standard.md) | `platform-governance` 전용 책임과 경계 | 다른 platform 공통 기준 |
-| [platform-resource-standard.md](platform-resource-standard.md) | `platform-resource` 전용 책임과 경계 | 다른 platform 공통 기준 |
-| [platform-integrations-standard.md](platform-integrations-standard.md) | `platform-integrations` 전용 책임과 bridge ownership | 본체 platform 구현 기준 |
-| [checklist.md](checklist.md) | 위 기준 문서의 적용 여부 확인 | 기준 문장 재정의 |
+| [structure/gradle-properties.md](structure/gradle-properties.md) | `gradle.properties`와 version pin 기준 | workflow 세부 절차 |
+| [structure/build-gradle.md](structure/build-gradle.md) | `build.gradle`과 의존성/publish 구조 기준 | 실제 module 목록 |
+| [structure/settings-gradle.md](structure/settings-gradle.md) | `settings.gradle` module 선언과 local substitution 기준 | 의존성 version pin 규칙 |
+| [operations/ci-cd.md](operations/ci-cd.md) | `.github/workflows` build/publish 기준 | Gradle plugin/module 구조 |
+| [operations/publish.md](operations/publish.md) | package publish 기준 | build/module 구조 재정의 |
+| [operations/checklist.md](operations/checklist.md) | 위 기준 문서의 적용 여부 확인 | 기준 문장 재정의 |
+| [standards/platform-security.md](standards/platform-security.md) | `platform-security` 전용 책임과 경계 | 다른 platform 공통 기준 |
+| [standards/platform-governance.md](standards/platform-governance.md) | `platform-governance` 전용 책임과 경계 | 다른 platform 공통 기준 |
+| [standards/platform-resource.md](standards/platform-resource.md) | `platform-resource` 전용 책임과 경계 | 다른 platform 공통 기준 |
+| [standards/platform-integrations.md](standards/platform-integrations.md) | `platform-integrations` 전용 책임과 bridge ownership | 본체 platform 구현 기준 |
 
 ## 반영 기준
 
