@@ -3,7 +3,7 @@
 ## 디렉터리 역할
 
 - `registry`: 계층 기준, 운영 기준, 문서 / build / publish 구조 기준
-- `repositories`: 실제 레포 카탈로그, 최신 기준 버전, 레포별 현재 상태와 정리 후보
+- `repositories`: 실제 레포 카탈로그, 최신 기준 버전, 레포별 현재 상태
 
 ## 읽는 순서
 
@@ -17,3 +17,4 @@
 8. [repositories/README.md](repositories/README.md)
 9. [repositories/layer1/README.md](repositories/layer1/README.md)
 10. [repositories/layer2/README.md](repositories/layer2/README.md)
+11. [troubleshooting.md](troubleshooting.md)

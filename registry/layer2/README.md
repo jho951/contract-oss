@@ -55,6 +55,15 @@
 - platform 간 연결은 각 본체 repo에 섞지 않고 `platform-integrations`의 optional bridge로 분리한다.
 - 문서, build, workflow는 같은 변경 단위로 맞춘다.
 
+## 플랫폼 공통 정합성 기준
+
+- runtime platform인 `platform-security`, `platform-governance`, `platform-resource`는 production profile 기본값을 동일하게 가져간다.
+- production profile 기본값은 `["prod", "production"]`로 통일한다.
+- runtime platform의 fail-fast는 service role/preset을 고려한 역할별 규칙이어야 한다.
+- platform 소비 서비스가 1계층 OSS 타입을 직접 맞춰 노출해야만 동작하는 구조는 허용하지 않는다.
+- platform 내부에서만 1계층 OSS를 adapter로 흡수하고, 소비자에게는 platform 소유 port/adapter만 노출한다.
+- README, quickstart, ownership, usage 예시 버전은 각 repository의 현재 `release_version`과 exact dependency pin에 맞춰 유지한다.
+
 ## 현재 구조 흡수 기준
 
 2계층 레포의 현재 버전, 모듈, 책임은 [repositories/layer2/README.md](../../repositories/layer2/README.md)에 기록한다.
