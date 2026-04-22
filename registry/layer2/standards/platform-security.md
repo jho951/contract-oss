@@ -21,8 +21,8 @@
 - `policy-config`, audit pipeline, feature flag config 호환 기준의 owner는 `platform-governance`다.
 - `platform-security`는 보안 평가와 보안 event/publisher 계약을 소유하고, governance audit 기록 구현은 소유하지 않는다.
 - 1계층 `auth`, `rate-limiter` bean 타입을 소비 서비스가 직접 맞춰 노출하도록 요구하지 않는다.
-- `platform-security-auth` 공개 API는 최종적으로 `com.auth.*` 직접 노출을 제거해야 한다.
-- 제거 전까지 공개 시그니처가 `com.auth.*`를 노출하면 해당 의존성은 숨기지 않고 `api` 범위로 승격해 publish surface와 실제 compile surface를 일치시킨다.
+- 공개 auth/rate-limit 계약은 `platform-security-ports`의 platform-owned runtime view와 port로 닫는다.
+- `platform-security-adapter-auth`, `platform-security-adapter-ratelimiter`는 raw `com.auth.*`, raw `RateLimiter` 같은 1계층 결합을 흡수하는 adapter 역할로만 둔다.
 - platform 내부 auto-configuration과 운영 정책은 platform 소유 port/adapter를 기준으로 판단한다.
 - policy, auto-configuration, gateway 통합 표면은 raw auth/rate-limit SPI가 아니라 platform 소유 decision/adapter 계약만 본다.
 
@@ -36,12 +36,21 @@
 
 - `platform-security`는 1계층 OSS 타입을 직접 public contract처럼 소비자에게 요구하지 않는다.
 - token/session/rate-limit 연동은 platform 소유 port/adapter로 추상화한다.
-- 예시 경계는 `PlatformTokenIssuerPort`, `PlatformSessionSupport`, `PlatformInternalTokenValidator`, `PlatformAuthenticationDecision`, `PlatformRateLimitDecision`, `PlatformRateLimitAdapter`처럼 platform prefix를 가진 타입으로 둔다.
-- 1계층 `TokenService`, `SessionStore`, `SessionPrincipalMapper`, `RateLimiter`가 필요하면 platform 내부 adapter가 이를 감싸고, 그 adapter만 auto-configuration과 policy enforcer가 사용한다.
-- `PlatformRateLimitAdapter` 공개 계약은 platform 소유 decision만 반환해야 하며 raw `RateLimiter`나 1계층 decision/spi 타입을 노출하지 않는다.
+- 예시 경계는 `PlatformTokenIssuerPort`, `PlatformSessionSupport`, `PlatformInternalTokenValidator`, `PlatformAuthenticationDecision`, `PlatformRateLimitDecision`, `PlatformRateLimitPort`처럼 platform prefix를 가진 타입으로 둔다.
+- 1계층 `TokenService`, `SessionStore`, `SessionPrincipalMapper`, `RateLimiter`가 필요하면 adapter 계층이 이를 감싸고, auto-configuration과 policy enforcer는 `Platform...Port` 같은 platform 계약만 기준으로 사용한다.
+- token/session issuance 공개 계약은 `PlatformIssueTokenCommand`, `PlatformIssueSessionCommand`, `PlatformIssuedToken`, `PlatformSessionView`처럼 orchestration 목적 runtime view로 닫는다.
+- `PlatformRateLimitPort`는 service-facing 공개 계약이고, `PlatformRateLimitAdapter`는 backing implementation을 연결하는 adapter marker로만 둔다.
 - `OperationalSecurityPolicyEnforcer` 같은 policy는 `PlatformAuthenticationDecision`, `PlatformRateLimitDecision` 같은 platform 소유 decision만 보고 판단한다.
 - `PlatformSecurityAutoConfiguration`의 auth wiring은 raw `com.auth.*` bean graph에 직접 결합하지 않고 platform 소유 auth adapter/resolver 계약을 통해 조립한다.
 - `@ConditionalOnBean`과 운영 guard는 1계층 bean 존재 여부가 아니라 platform 소유 bean 존재 여부를 기준으로 동작해야 한다.
+
+## Runtime View Model Rule
+
+- `platform-security`는 runtime/orchestration 관점의 view 모델은 가질 수 있다.
+- 예: `SecurityRequest`, `SecurityContext`, `PlatformRateLimitRequest`, `PlatformRateLimitDecision`
+- 하지만 1계층 `Principal`, `TokenService`, `SessionStore`를 사실상 다시 만든 canonical auth 모델이나 service 계약을 새로 만들면 안 된다.
+- `PlatformAuthenticatedPrincipal` 같은 타입이 남아 있다면 이는 공통 runtime view로만 취급하고, 1계층 principal의 영구 대체 canonical model처럼 확장하지 않는다.
+- token/session issuance나 lookup 계약은 가능하면 principal 전체 복제보다 issue request, session lookup, issued credential view 같은 runtime 목적 DTO로 닫는 방향을 우선한다.
 
 ## platform-security 모듈 기준
 
@@ -51,9 +60,10 @@
 - `platform-policy-api`
 - `platform-security-policy`
 - `platform-security-api`
-- `platform-security-auth`
+- `platform-security-ports`
+- `platform-security-adapter-auth`
 - `platform-security-ip`
-- `platform-security-rate-limit`
+- `platform-security-adapter-ratelimiter`
 - `platform-security-core`
 - `platform-security-web`
 - `platform-security-autoconfigure`
@@ -61,7 +71,7 @@
 - `platform-security-internal-autoconfigure`
 - `platform-security-policyconfig-bridge`
 - `platform-security-starter`
-- `platform-security-local-support`
+- `platform-security-support-local`
 - `platform-security-client`
 - `platform-security-test-support`
 - `platform-security-hybrid-web-adapter`
@@ -94,11 +104,12 @@
 - 기본 JWT authority 변환은 `role`, `roles`, `scope`, `scp`, `status` claim을 사용한다.
 - `status=A`는 `STATUS_A`와 함께 `STATUS_ACTIVE` authority로 표현한다.
 - gateway header 인증은 `platform.security.auth.gateway-header.enabled=true`일 때 활성화한다.
-- gateway header 인증은 `X-User-Id`, `X-User-Status`를 읽어 Spring Security `Authentication`을 만든다.
-- gateway header 인증 filter는 `FilterRegistrationBean#setEnabled(false)`로 Boot servlet filter 중복 등록을 막고 Spring Security filter chain 안에서만 동작해야 한다.
+- gateway header 인증은 `X-User-Id`, `X-User-Status`를 읽어 Servlet에서는 Spring Security `Authentication`, WebFlux에서는 `GatewayUserPrincipal` 기반 principal을 만든다.
+- Servlet gateway header 인증 filter는 `FilterRegistrationBean#setEnabled(false)`로 Boot servlet filter 중복 등록을 막고 Spring Security filter chain 안에서만 동작해야 한다.
 - 401/403 응답은 기본 `AuthenticationEntryPoint`, `AccessDeniedHandler`를 통해 `SecurityFailureResponseWriter` 흐름으로 연결한다.
 - servlet filter 순서는 `BearerTokenAuthenticationFilter` 뒤에 gateway header 인증 filter를 두고, 그 뒤에 `PlatformSecurityServletFilter`를 둔다.
 - gateway header 인증 filter가 없으면 `PlatformSecurityServletFilter`는 `BearerTokenAuthenticationFilter` 뒤에 둔다.
+- WebFlux gateway는 `PlatformSecurityReactiveGatewayIntegration`이 제공하는 reactive gateway header `WebFilter` 뒤에 `PlatformSecurityWebFilter`를 두는 구성을 표준으로 본다.
 - `PlatformSecurityAutoConfiguration`은 auth wiring을 platform 소유 auth adapter/resolver 계약으로 조립하고 raw `com.auth.*` bean graph를 공개 wiring 기준으로 삼지 않는다.
 
 ## 포함하지 말아야 할 것
@@ -116,8 +127,9 @@
 - 소비자 서비스별 JWT authority converter 직접 조립
 - 소비자 서비스별 gateway header authentication filter/principal 직접 조립
 - 소비자 서비스가 `com.auth.*`나 1계층 `RateLimiter` 타입을 platform 계약처럼 맞춰 노출해야만 성립하는 구조
-- `platform-security-auth` 공개 API에 `com.auth.*` raw 타입을 영구 계약처럼 고정하는 구조
-- `PlatformRateLimitAdapter`, policy, gateway adapter가 raw `RateLimiter`나 1계층 decision/spi를 그대로 노출하는 구조
+- `platform-security-adapter-auth` 공개 API에 `com.auth.*` raw 타입을 영구 계약처럼 고정하는 구조
+- `platform-security-ports` 대신 adapter 모듈이 public contract 역할을 떠안는 구조
+- `PlatformRateLimitPort`, policy, gateway adapter가 raw `RateLimiter`나 1계층 decision/spi를 그대로 노출하는 구조
 - `PlatformSecurityAutoConfiguration`이 raw `com.auth.*` bean graph에 직접 결합된 구조
 
 ## 확장 규칙
@@ -132,6 +144,8 @@
 - gateway/edge 서비스처럼 starter 기본 filter auto-registration을 그대로 쓸 수 없는 경우를 위해 공식 hybrid adapter module을 둘 수 있다.
 - hybrid adapter는 `SecurityPolicyService`, `SecurityIngressAdapter`, auth adapter, rate-limit decision adapter, failure writer, audit publisher처럼 gateway가 직접 소비할 안전한 조립 포인트만 노출해야 한다.
 - gateway 통합은 hybrid adapter를 공식 표면으로 사용하고 `platform-security-core`나 `platform-security-web` 내부 wiring을 직접 재조립하지 않는다.
+- hybrid adapter는 Servlet용 `PlatformSecurityGatewayIntegration`과 WebFlux용 `PlatformSecurityReactiveGatewayIntegration`을 공식 표면으로 제공할 수 있다.
+- strict 목표는 gateway가 `SecurityIngressAdapter` 같은 내부 bean graph 대신 `HybridSecurityRuntime`, `HybridFailureResponseContract`, `HybridHeaderAuthenticationAdapter` 같은 platform-owned runtime surface만 보도록 수렴하는 것이다.
 - gateway가 `platform-security-core`나 `platform-security-web` 내부 구현을 직접 조립하는 방식은 표준 경계로 보지 않는다.
 
 ## 운영 프로필과 fail-fast 기준

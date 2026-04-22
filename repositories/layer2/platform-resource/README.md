@@ -3,7 +3,7 @@
 ## 기준
 
 - GitHub: https://github.com/jho951/platform-resource
-- Version: `2.0.2`
+- Version: `3.0.0`
 - 계층: 2계층 platform
 - registry 기준: [../../../registry/layer2/README.md](../../../registry/layer2/README.md)
 - platform 표준: [../../../registry/layer2/standards/platform-resource.md](../../../registry/layer2/standards/platform-resource.md)
@@ -30,11 +30,11 @@
 - `platform-resource-api`
 - `platform-resource-spi`
 - `platform-resource-core`
-- `platform-resource-filestorage-adapter`
-- `platform-resource-notification-adapter`
+- `platform-resource-adapter-filestorage`
+- `platform-resource-adapter-notification`
 - `platform-resource-jdbc`
 - `platform-resource-jdbc-relay`
-- `platform-resource-local`
+- `platform-resource-support-local`
 - `platform-resource-autoconfigure`
 - `platform-resource-starter`
 
@@ -69,7 +69,7 @@
 - `fileStorageVersion=2.0.0`
 - `notificationApiVersion=2.0.0`
 - `notificationCoreVersion=2.0.1`
-- `release_version=2.0.2`
+- `release_version=3.0.0`
 
 ## 실무 기준
 
@@ -83,12 +83,16 @@
 - `platform-resource-governance-bridge`의 source, tests, build, publish, artifact version, release tag는 `platform-integrations`가 소유한다.
 - notification은 resource lifecycle 부수효과 orchestration 범위에 한정하고, 도메인별 후속 업무 처리는 소비자 override나 별도 handler가 담당한다.
 - `platform-resource`는 `platform-governance` 구현체를 직접 의존하지 않는다.
+- `platform-resource-core`와 starter는 `file-storage`, `notification` 1계층 타입을 직접 노출하지 않고, adapter 모듈만 1계층과 platform port를 함께 안다.
 
 ## 반영 상태
 
 - `OUTBOX` 운영 경로를 위한 공식 `platform-resource-jdbc-relay` 모듈이 추가됐다.
 - auto-config는 resource policy, lifecycle, access를 부분 확장할 수 있는 customizer 훅을 제공한다.
 - production profile 기본값은 `prod`, `production`으로 통일됐다.
-- README, usage, private-publish 예시는 `2.0.2` 기준으로 정리됐다.
-- 구현 레포 `main` push와 `v2.0.2` publish까지 완료됐다.
-- `v2.0.1` publish 실패와 `v2.0.2` 재배포 경위는 [troubleshooting.md](../../../troubleshooting.md)에 기록한다.
+- `platform-resource-spi`는 2계층 내부 port 역할을 유지하고, 1계층 storage/notification 타입은 adapter layer에만 남긴다.
+- `platform-resource-jdbc-relay`는 공식 published/module surface로 유지한다.
+- README, usage, private-publish 예시는 `3.0.0` 기준으로 정리됐다.
+- 구현 레포 `main` push와 `v3.0.0` publish까지 완료됐다.
+- `platform-resource-governance-bridge:2.0.0`는 `platform-resource 3.0.0`, `platform-governance 3.0.0` 기준으로 publish 완료 상태다.
+- `v2.0.1` publish 실패와 `v2.0.2` 재배포 경위는 과거 이력으로 [troubleshooting.md](../../../troubleshooting.md)에 남긴다.

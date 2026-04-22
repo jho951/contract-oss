@@ -3,7 +3,7 @@
 ## 기준
 
 - GitHub: https://github.com/jho951/platform-governance
-- Version: `2.0.2`
+- Version: `3.0.0`
 - 계층: 2계층 platform
 - registry 기준: [../../../registry/layer2/README.md](../../../registry/layer2/README.md)
 - platform 표준: [../../../registry/layer2/standards/platform-governance.md](../../../registry/layer2/standards/platform-governance.md)
@@ -33,18 +33,18 @@
 - `auditLogVersion=2.0.0`
 - `policyConfigVersion=2.0.0`
 - `pluginPolicyEngineVersion=2.0.1`
-- `release_version=2.0.2`
-- `platformReleaseVersion=2.0.2`
+- `release_version=3.0.0`
+- `platformReleaseVersion=3.0.0`
 
 ## 현재 모듈
 
 - `platform-governance-bom`
 - `platform-governance-api`
-- `platform-governance-audit`
-- `platform-governance-config`
+- `platform-governance-adapter-auditlog`
+- `platform-governance-adapter-policyconfig`
 - `platform-governance-core`
 - `platform-governance-engine`
-- `platform-governance-spring`
+- `platform-governance-autoconfigure`
 - `platform-governance-starter`
 - `platform-governance-common-test`
 - `platform-governance-samples`
@@ -84,17 +84,19 @@
 - feature flag config 설정 prefix는 `platform.governance.feature-flags.*`를 사용하고, 기존 `platform.governance.plugin-policy-engine.*`는 deprecated alias로만 유지한다.
 - 운영에서는 audit sink/context/service identity, `PolicyConfigSource.operationalStatus()`, fatal handler 정책을 fail-fast 대상으로 본다.
 - security/resource event를 governance audit으로 연결하는 구현은 `platform-integrations`의 bridge가 소유한다.
+- 서비스는 공식 SPI인 `AuditSink`, `PolicyConfigSource`, `GovernanceDecisionEngine`을 우선 사용하고, `AuditLogRecorder` 같은 adapter bean을 직접 extension point처럼 다루지 않는다.
 - 업무 승인, 게시글 권한, workspace membership 같은 도메인 사실 판단은 소비자 서비스가 소유한다.
 - `plugin-policy-engine` 전체 runtime을 흡수하거나 adapter로 재포장하지 않고, feature flag/config 호환 기준과 BOM 정렬 대상으로만 둔다.
 
 ## 의존성 pin 기준
 
-- `platform-governance 2.0.2`의 현재 published 기준 pin은 `auditLogVersion=2.0.0`, `policyConfigVersion=2.0.0`, `pluginPolicyEngineVersion=2.0.1`이다.
+- `platform-governance 3.0.0`의 현재 published 기준 pin은 `auditLogVersion=2.0.0`, `policyConfigVersion=2.0.0`, `pluginPolicyEngineVersion=2.0.1`이다.
 - 따라서 `oss-contract`는 1계층 최신 `main` 버전이 아니라, 2계층 `platform-governance`가 실제로 pin한 published 좌표를 SoT로 본다.
 
 ## 현재 상태
 
-- 현재 릴리스 기준은 `2.0.2`다.
+- 현재 릴리스 기준은 `3.0.0`이다.
 - 서비스의 공식 감사 출력 SPI는 `AuditSink`다.
 - `platform-integrations` bridge는 서비스가 등록한 `AuditSink`에 직접 쓰지 않고 governance 내부 `AuditLogRecorder` bean을 통해 기록한다.
 - 따라서 서비스는 custom `AuditLogRecorder`가 아니라 계속 `AuditSink`를 등록한다.
+- 구현 레포 `main` push와 `v3.0.0` publish까지 완료됐다.

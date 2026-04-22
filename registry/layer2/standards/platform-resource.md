@@ -18,6 +18,21 @@
 - `platform-resource`는 `platform-governance` 구현체를 직접 의존하지 않는다.
 - production profile 기본값은 다른 runtime platform과 동일해야 한다.
 
+## platform 소유 경계 기준
+
+- `platform-resource-core`와 starter는 `file-storage`, `notification` 1계층 타입을 직접 import하지 않는다.
+- storage vendor 차이는 `ResourceContentStore`, `ResourceBinaryStorePort` 같은 platform port 뒤로 숨긴다.
+- lifecycle 이후 알림이나 후속 전달은 `ResourceLifecyclePublisher`, `ResourceNotificationPort` 같은 platform 계약 뒤로 숨긴다.
+- `platform-resource-adapter-filestorage`, `platform-resource-adapter-notification`, `platform-resource-jdbc` 같은 adapter 모듈만 1계층 타입과 platform port를 함께 안다.
+- 서비스는 backing store adapter를 선택할 수는 있지만 `FileStorage`, `NotificationDispatcher` 같은 1계층 타입을 직접 import하지 않는다.
+
+## Runtime View Model Rule
+
+- `platform-resource`는 runtime 조립용 계약과 event view는 소유할 수 있다.
+- 예: `ResourceLifecycleEvent`, `ResourceDescriptor`, `ResourceOwnerRef`, audit/bridge payload view
+- 하지만 `FileStorage`나 `NotificationDispatcher`를 이름만 바꿔 다시 만든 canonical service 계약을 platform public API로 만들면 안 된다.
+- 문서 snapshot 의미, block attachment 정책, trash/purge/orphan 업무 규칙처럼 도메인 의미는 3계층에 남긴다.
+
 ## 1계층 조립 기준
 
 - `file-storage`: content store primitive, backend adapter, object storage operation

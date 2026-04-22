@@ -12,6 +12,15 @@
 - `platform-governance`
 - `platform-integrations`
 
+## 현재 published 기준
+
+- `platform-security`: `3.0.0`
+- `platform-resource`: `3.0.0`
+- `platform-governance`: `3.0.0`
+- `platform-integrations`: `2.0.0`
+- `platform-security-governance-bridge`: `2.0.0`
+- `platform-resource-governance-bridge`: `2.0.0`
+
 ## 이번 작업의 목표
 
 - `platform-security`에서 raw OSS SPI 직접 노출을 줄이고 platform-owned 계약으로 정리한다.
@@ -147,7 +156,7 @@
 - 공개 auth 계약이 위 platform-owned 타입을 기준으로 동작하도록 정리
 - 제거 전까지 공개 노출이 남는 `com.auth.*` 의존성은 `api` 범위로 승격
 - `PlatformSecurityAutoConfiguration` auth wiring을 platform-owned factory 기준으로 추상화
-- `PlatformRateLimitAdapter`가 raw `RateLimiter`를 직접 노출하지 않도록 변경
+- `PlatformRateLimitPort`를 service-facing 계약으로 세우고 `PlatformRateLimitAdapter`는 raw `RateLimiter`를 감싸는 adapter marker로만 남기도록 변경
   - `PlatformRateLimitRequest`
   - `PlatformRateLimitDecision`
   - `PlatformRateLimitKeyType`
@@ -332,38 +341,45 @@
 ## 지금 시점의 정합 상태
 
 - `platform-security`
-  - 코드/문서/버전 정리 완료
-  - `2.1.0` release 완료
+  - ports/core/adapter 경계 반영 완료
+  - `3.0.0` release 완료
 - `platform-resource`
-  - 문서 정합화 완료
+  - adapter/spi/runtime 경계 유지
+  - `3.0.0` release 완료
 - `platform-governance`
-  - 전수 확인 결과 추가 수정 불필요
+  - adapter/autoconfigure/runtime 경계 유지
+  - `3.0.0` release 완료
 - `platform-integrations`
-  - 문서 정합화 완료
+  - bridge pin을 `security=3.0.0`, `governance=3.0.0`, `resource=3.0.0`으로 정렬
+  - 두 bridge 모두 `2.0.0` release 완료
 - `oss-contract`
-  - layer2 표준/상태 문서 정합화 완료
+  - layer2 표준/상태 문서를 위 published 기준으로 다시 정렬
 
 ## push / publish 관점 현재 상태
 
 - `platform-security`
   - `main` push 완료
-  - `v2.1.0` tag push 완료
+  - `v3.0.0` tag push 완료
   - publish workflow 성공 완료
 - `platform-resource`
-  - 문서 정렬용 로컬 커밋 완료
-  - 이번 턴 추가 배포 필요 없음
+  - `main` push 완료
+  - `v3.0.0` tag push 완료
+  - publish workflow 성공 완료
 - `platform-governance`
-  - 변경 없음
+  - `main` push 완료
+  - `v3.0.0` tag push 완료
+  - publish workflow 성공 완료
 - `platform-integrations`
-  - 문서 정렬용 로컬 커밋 완료
-  - 이번 턴 추가 배포 필요 없음
+  - `main` push 완료
+  - `platform-security-governance-bridge/v2.0.0` tag push 완료
+  - `platform-resource-governance-bridge/v2.0.0` tag push 완료
+  - bridge publish workflow 성공 완료
 - `oss-contract`
-  - 문서 추가 정합화 진행 중
+  - layer2 상태 문서와 표준 문서를 현재 배포본 기준으로 정렬 완료
 
 ## 아직 남은 작업
 
-- `platform-resource`, `platform-integrations`, `oss-contract` `main` push
-- `oss-contract` 최신 문서 정합화 커밋 및 push
+- `oss-contract` 최신 문서 정합화 커밋 및 `main` push
 
 ## 주의
 

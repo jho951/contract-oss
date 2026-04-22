@@ -55,6 +55,65 @@
 - platform 간 연결은 각 본체 repo에 섞지 않고 `platform-integrations`의 optional bridge로 분리한다.
 - 문서, build, workflow는 같은 변경 단위로 맞춘다.
 
+## 엄격한 분리 기준
+
+가장 엄격한 형태의 2계층 구조는 아래를 기준으로 본다.
+
+```text
+[1계층 OSS]
+auth / session / rate-limiter / file-storage / notification / audit-log / policy-config
+        ↑
+        │  adapter만 1계층과 platform을 함께 안다
+        │
+[adapter layer]
+auth-platform-adapter
+ratelimiter-platform-adapter
+filestorage-platform-adapter
+notification-platform-adapter
+auditlog-platform-adapter
+policyconfig-platform-adapter
+        ↑
+        │  service는 platform 타입만 안다
+        │
+[2계층 platform]
+platform-api
+platform-ports
+platform-core
+platform-starter
+platform-policy
+```
+
+- `platform core/starter/policy`는 1계층 타입을 직접 import하지 않는다.
+- 1계층 타입과 platform port를 함께 아는 코드는 adapter layer에만 둔다.
+- 서비스는 platform starter와 platform port만 소비하고, 1계층 타입을 직접 import하지 않는다.
+- adapter를 같은 repo 안에 두면 아키텍처 경계 분리는 성립하지만, repo 전체가 1계층 무지라고 보지는 않는다.
+- repo 수준까지 완전 분리를 원하면 adapter source도 platform repo 밖으로 분리해야 한다.
+
+## Public Surface Rule
+
+- platform public API는 100% platform-owned 타입으로 닫는다.
+- 공개 시그니처에 raw `com.auth.*`, `RateLimiter`, `FileStorage`, `NotificationDispatcher`, `AuditLogRecorder`, `PolicyConfig*` 같은 1계층 타입이 나오면 안 된다.
+- auto-configuration과 starter 조건도 `@ConditionalOnBean(Platform...Port.class)`처럼 platform port 기준으로만 건다.
+- 1계층 bean을 감지하고 platform port 구현으로 바꾸는 일은 adapter auto-configuration의 책임으로 본다.
+
+## Runtime View Rule
+
+platform-owned 타입은 허용하되, 그 목적은 1계층 핵심 모델의 대체가 아니라 2계층 runtime 조립 언어여야 한다.
+
+- 허용:
+  - `SecurityRequest`
+  - `SecurityContext`
+  - `PlatformRateLimitRequest`
+  - `PlatformRateLimitDecision`
+  - `ResourceLifecycleEvent`
+  - `IssuedCredentialView`
+- 금지:
+  - 1계층 `Principal`을 사실상 다시 정의한 새 canonical principal 모델
+  - `TokenService`, `FileStorage`, `NotificationDispatcher`를 그대로 복제한 platform service 계약
+  - 1계층 도메인 계약을 이름만 바꿔서 다시 노출하는 wrapper API
+
+즉 2계층 DTO는 orchestration/runtime view여야 하고, 1계층 도메인 계약의 복제품이 되면 안 된다.
+
 ## 플랫폼 공통 정합성 기준
 
 - runtime platform인 `platform-security`, `platform-governance`, `platform-resource`는 production profile 기본값을 동일하게 가져간다.

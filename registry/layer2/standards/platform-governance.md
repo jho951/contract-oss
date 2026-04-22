@@ -19,6 +19,19 @@
 - security/resource event를 governance audit으로 연결하는 bridge는 `platform-integrations`에서 제공한다.
 - production profile 기본값은 다른 runtime platform과 동일해야 한다.
 
+## platform 소유 경계 기준
+
+- `platform-governance-api`, `platform-governance-core`, `platform-governance-engine`은 1계층 audit/config 타입을 직접 public contract로 노출하지 않는다.
+- 서비스 확장은 `AuditSink`, `PolicyConfigSource`, `GovernanceDecisionEngine`, `ViolationHandler` 같은 공식 SPI로 닫는다.
+- 서비스가 `AuditLogRecorder` 같은 내부 adapter bean을 직접 override해야만 동작하는 구조는 허용하지 않는다.
+- audit-log, policy-config, plugin-policy-engine-config를 아는 코드는 adapter/autoconfigure 계층으로 한정한다.
+
+## Owner Rule
+
+- `platform-governance`는 policy read, evaluation, audit contract, extension point를 소유한다.
+- publish, revoke, history, approval workflow 같은 운영 애플리케이션 workflow의 최종 owner는 3계층 서비스나 별도 governance application이다.
+- 즉 `platform-governance`는 governance runtime이지, governance 운영 애플리케이션 그 자체가 아니다.
+
 ## 1계층 조립 기준
 
 - `audit-log`: 구조화 audit event, sink, masking, recorder primitive

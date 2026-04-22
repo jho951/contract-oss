@@ -3,7 +3,7 @@
 ## 기준
 
 - GitHub: https://github.com/jho951/platform-integrations
-- Version: `1.0.3`
+- Version: `2.0.0`
 - 계층: 2계층 optional integration platform
 - registry 기준: [../../../registry/layer2/README.md](../../../registry/layer2/README.md)
 - platform 표준: [../../../registry/layer2/standards/platform-integrations.md](../../../registry/layer2/standards/platform-integrations.md)
@@ -45,10 +45,10 @@
 
 ## 현재 version pin
 
-- `securityVersion=2.1.0`
-- `governanceVersion=2.0.2`
-- `resourceVersion=2.0.2`
-- `release_version=1.0.3`
+- `securityVersion=3.0.0`
+- `governanceVersion=3.0.0`
+- `resourceVersion=3.0.0`
+- `release_version=2.0.0`
 
 ## 실무 기준
 
@@ -58,6 +58,7 @@
 - bridge는 보안 판단, resource 접근 판단, governance 정책 판단을 새로 만들지 않는다.
 - bridge는 본체 platform을 대신 enable하지 않는다.
 - bridge는 본체 platform 내부 구현 class를 직접 참조하지 않는다.
+- bridge는 두 platform의 공개 계약만 연결하고, raw 1계층 타입이나 본체 내부 bean graph를 기준으로 삼지 않는다.
 - bridge가 필요한 소비자는 본체 platform BOM/starter와 bridge artifact version을 모두 명시한다.
 - formal docs에서는 repo 역할을 `optional integration platform`, 개별 publish module을 `bridge module` 또는 `bridge artifact`로 부른다.
 
@@ -69,8 +70,8 @@
 
 ## 현재 상태
 
-- 구현 레포 `main`은 `security=2.1.0`, `governance=2.0.2`, `resource=2.0.2`, `release_version=1.0.3` 기준으로 정렬됐다.
-- `platform-resource-governance-bridge:1.0.3`와 `platform-security-governance-bridge:1.0.3`가 모두 publish 완료 상태다.
-- 구현 레포 `main` 문서는 `platform-security 2.1.0` 기준 pin 설명으로 갱신됐다.
+- 구현 레포 `main`은 `security=3.0.0`, `governance=3.0.0`, `resource=3.0.0`, `release_version=2.0.0` 기준으로 정렬됐다.
+- `platform-resource-governance-bridge:2.0.0`와 `platform-security-governance-bridge:2.0.0`가 모두 publish 완료 상태다.
+- 구현 레포 `main` 문서는 `platform-security 3.0.0`, `platform-governance 3.0.0`, `platform-resource 3.0.0` 기준 pin 설명으로 갱신됐다.
 - 서비스의 공식 governance 출력 SPI는 `AuditSink`다.
 - bridge는 서비스 확장 포인트로 `AuditLogRecorder`를 노출하지 않고 governance 내부 `AuditLogRecorder` bean을 통해 기록한다.

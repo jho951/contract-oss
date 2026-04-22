@@ -19,6 +19,7 @@
 - bridge는 본체 platform의 release 단위와 독립적으로 release할 수 있다.
 - bridge는 두 platform을 모두 쓰는 소비자가 `implementation`으로 명시할 때만 활성화된다.
 - bridge는 source/target platform을 대신 enable하지 않는다.
+- bridge는 각 platform의 내부 bean graph나 1계층 raw 타입을 직접 기준으로 삼지 않는다.
 
 ## 현재 모듈 기준
 
@@ -57,6 +58,7 @@
 - `platform-resource-governance-bridge`는 `ResourceLifecyclePublisher`와 `AuditLogRecorder` 계약으로만 연결한다.
 - `platform-resource-governance-bridge` source, tests, build script, publish configuration, artifact version, release tag는 `platform-integrations`가 소유한다.
 - `platform-resource`는 `ResourceLifecycleEvent`, `ResourceLifecyclePublisher`, lifecycle publisher composition, lifecycle mode fail-fast rule만 소유한다.
+- bridge가 필요하더라도 source platform 본체가 target platform 구현체를 직접 의존하도록 만들면 안 된다.
 - 연결 대상 platform version은 `gradle.properties`에 exact version으로 pin한다.
 - bridge release version은 `platform-integrations`의 `release_version`으로 관리한다.
 - publish는 bridge module 단위로 수행할 수 있다.
