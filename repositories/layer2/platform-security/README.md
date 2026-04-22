@@ -3,7 +3,7 @@
 ## 기준
 
 - GitHub: https://github.com/jho951/platform-security
-- Version: `2.0.5`
+- Version: `2.1.0`
 - 계층: 2계층 platform
 - registry 기준: [../../../registry/layer2/README.md](../../../registry/layer2/README.md)
 - platform 표준: [../../../registry/layer2/standards/platform-security.md](../../../registry/layer2/standards/platform-security.md)
@@ -83,7 +83,7 @@
 - `auth_version=3.0.1`
 - `ipGuard_version=3.0.0`
 - `rateLimiter_version=2.0.0`
-- `release_version=2.0.5`
+- `release_version=2.1.0`
 
 ## 실무 기준
 
@@ -111,5 +111,5 @@
 - `OperationalSecurityPolicyEnforcer`는 preset-aware 규칙과 명시적 예외 스위치 기준으로 재구성됐다.
 - 공식 gateway hybrid adapter module이 추가됐다.
 - production profile 기본값은 `prod`, `production`으로 통일됐다.
-- 구현 레포 `main` push와 `v2.0.5` release까지 완료됐다.
-- `platform-security-governance-bridge:1.0.3`는 이 버전을 기준으로 검증되고 배포됐다.
+- 구현 레포는 `2.1.0` 기준으로 platform-owned auth contract, rate-limit adapter contract, hybrid gateway surface를 정리했다.
+- `platform-security-governance-bridge:1.0.3`는 기존 `2.0.5` 기준으로 검증/배포됐고, 이후 `2.1.0` 승격이 진행 중이다.

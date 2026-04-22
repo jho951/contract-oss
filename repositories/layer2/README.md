@@ -2,7 +2,7 @@
 
 | 레포 | Version | 성격 | 표준 | 흡수 대상 | GitHub | 상태 |
 | --- | --- | --- | --- | --- | --- | --- |
-| `platform-security` | `2.0.5` | runtime platform | [표준](../../registry/layer2/standards/platform-security.md) | `auth`, `ip-guard`, `rate-limiter` | https://github.com/jho951/platform-security | [상태](platform-security/README.md) |
+| `platform-security` | `2.1.0` | runtime platform | [표준](../../registry/layer2/standards/platform-security.md) | `auth`, `ip-guard`, `rate-limiter` | https://github.com/jho951/platform-security | [상태](platform-security/README.md) |
 | `platform-governance` | `2.0.2` | runtime platform | [표준](../../registry/layer2/standards/platform-governance.md) | `audit-log`, `policy-config`, `plugin-policy-engine-config` 호환 | https://github.com/jho951/platform-governance | [상태](platform-governance/README.md) |
 | `platform-resource` | `2.0.2` | runtime platform | [표준](../../registry/layer2/standards/platform-resource.md) | `file-storage`, `notification` | https://github.com/jho951/platform-resource | [상태](platform-resource/README.md) |
 | `platform-integrations` | `1.0.3` | optional bridge layer | [표준](../../registry/layer2/standards/platform-integrations.md) | platform 간 optional bridge | https://github.com/jho951/platform-integrations | [상태](platform-integrations/README.md) |
