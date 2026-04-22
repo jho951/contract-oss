@@ -112,4 +112,5 @@
 - 공식 gateway hybrid adapter module이 추가됐다.
 - production profile 기본값은 `prod`, `production`으로 통일됐다.
 - 구현 레포는 `2.1.0` 기준으로 platform-owned auth contract, rate-limit adapter contract, hybrid gateway surface를 정리했다.
-- `platform-security-governance-bridge:1.0.3`는 기존 `2.0.5` 기준으로 검증/배포됐고, 이후 `2.1.0` 승격이 진행 중이다.
+- `main` push와 `v2.1.0` publish workflow 성공까지 완료됐다.
+- `platform-security-governance-bridge:1.0.3`는 기존 `2.0.5` 기준으로 검증/배포됐고, 이후 구현 레포 `main`은 `2.1.0` 기준으로 정렬됐다.

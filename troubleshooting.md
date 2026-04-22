@@ -1,6 +1,6 @@
 # OSS / Platform Troubleshooting
 
-이 문서는 2026-04-22 기준으로 1계층 OSS와 2계층 platform 경계를 맞추는 과정에서 실제로 확인한 문제, 변경 이유, 수정 내역, 현재 로컬 상태를 정리한 기록이다.
+이 문서는 2026-04-22 기준으로 1계층 OSS와 2계층 platform 경계를 맞추는 과정에서 실제로 확인한 문제, 변경 이유, 수정 내역, 현재 상태를 정리한 기록이다.
 
 이번 턴에서 새로 확인한 내용뿐 아니라, 이전 작업에서 남겨두지 못했던 release/publish 이력과 실패 원인도 함께 적는다.
 
@@ -178,7 +178,10 @@
 
 - commit: `34178b8`
 - message: `align platform-owned security contracts and release 2.1.0`
-- local tag created: `v2.1.0`
+- pushed branch: `main`
+- pushed tag: `v2.1.0`
+- publish workflow run id: `24762971913`
+- publish conclusion: `success`
 
 ### 이전 상태와의 연결
 
@@ -329,8 +332,8 @@
 ## 지금 시점의 정합 상태
 
 - `platform-security`
-  - 코드/문서/버전 로컬 정리 완료
-  - `2.1.0` release 준비 완료
+  - 코드/문서/버전 정리 완료
+  - `2.1.0` release 완료
 - `platform-resource`
   - 문서 정합화 완료
 - `platform-governance`
@@ -343,9 +346,9 @@
 ## push / publish 관점 현재 상태
 
 - `platform-security`
-  - `main`용 로컬 커밋 완료
-  - `v2.1.0` 로컬 태그 생성 완료
-  - 아직 remote push / publish 전
+  - `main` push 완료
+  - `v2.1.0` tag push 완료
+  - publish workflow 성공 완료
 - `platform-resource`
   - 문서 정렬용 로컬 커밋 완료
   - 이번 턴 추가 배포 필요 없음
@@ -355,20 +358,15 @@
   - 문서 정렬용 로컬 커밋 완료
   - 이번 턴 추가 배포 필요 없음
 - `oss-contract`
-  - 로컬 커밋 2개 완료
-  - `troubleshooting.md`는 아직 커밋 전
+  - 문서 추가 정합화 진행 중
 
 ## 아직 남은 작업
 
-- `platform-security` `main` push
-- `platform-security` `v2.1.0` tag push
-- tag 기반 publish workflow 또는 local publish 수행
 - `platform-resource`, `platform-integrations`, `oss-contract` `main` push
-- `oss-contract/troubleshooting.md` 커밋 여부 결정
+- `oss-contract` 최신 문서 정합화 커밋 및 push
 
 ## 주의
 
-- 이 문서는 현재 로컬 workspace 기준 상태를 적는다.
-- 아직 push/publish 전 단계라면 GitHub remote 상태와 다를 수 있다.
+- 이 문서는 로컬 작업과 원격 반영 결과를 함께 적는다.
 - untracked 초안이나 과거 작업 기록은 최종 push 범위에 자동 포함하지 않는다.
 - 과거 기록 중 일부 commit/tag/run id는 이전 작업 메모를 복원한 것이며, 이 문서는 그 맥락을 현재 정합 상태와 함께 보존하기 위한 용도다.

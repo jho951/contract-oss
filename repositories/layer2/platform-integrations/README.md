@@ -71,5 +71,6 @@
 
 - 구현 레포 `main`은 `security=2.1.0`, `governance=2.0.2`, `resource=2.0.2`, `release_version=1.0.3` 기준으로 정렬됐다.
 - `platform-resource-governance-bridge:1.0.3`와 `platform-security-governance-bridge:1.0.3`가 모두 publish 완료 상태다.
+- 구현 레포 `main` 문서는 `platform-security 2.1.0` 기준 pin 설명으로 갱신됐다.
 - 서비스의 공식 governance 출력 SPI는 `AuditSink`다.
 - bridge는 서비스 확장 포인트로 `AuditLogRecorder`를 노출하지 않고 governance 내부 `AuditLogRecorder` bean을 통해 기록한다.
