@@ -16,6 +16,7 @@
 - lifecycle event 발행과 publisher composition은 `platform-resource` 본체 책임이다.
 - lifecycle event를 governance audit으로 기록하는 bridge 구현은 `platform-integrations` 책임이다.
 - `platform-resource`는 `platform-governance` 구현체를 직접 의존하지 않는다.
+- production profile 기본값은 다른 runtime platform과 동일해야 한다.
 
 ## 1계층 조립 기준
 
@@ -34,6 +35,8 @@
 - file-storage adapter 조립
 - notification adapter 조립
 - local mode 차단과 kind policy fail-fast
+- outbox append 이후 relay를 담당하는 optional 운영 모듈
+- starter를 유지한 채 세부 정책을 바꿀 수 있는 customizer 확장 포인트
 
 ## 포함하지 말아야 할 것
 
@@ -52,6 +55,13 @@
 - catalog backend 차이는 `ResourceCatalog` 구현으로 흡수한다.
 - notification은 lifecycle 부수효과 orchestration에 한정하고, 도메인별 업무 처리는 소비자 override나 별도 handler가 담당한다.
 - governance audit 연결이 필요하면 `platform-integrations`의 `platform-resource-governance-bridge`를 추가한다.
+- JDBC outbox를 제공한다면 optional relay module도 공식 제공할 수 있다.
+- outbox relay module은 scheduler, batch pending 조회, publish fan-out, retry/backoff, metrics 같은 운영 보조 책임을 가진다.
+- auto-configuration은 `@ConditionalOnMissingBean`만으로 닫지 않고 `PlatformResourceCustomizer`, `ResourcePolicyCustomizer`, `ResourceLifecycleCustomizer`, `ResourceAccessCustomizer` 같은 공식 확장 훅을 둘 수 있다.
+
+## 운영 프로필 기준
+
+- production profile 기본값은 `["prod", "production"]`를 사용한다.
 
 ## 운영 기준
 

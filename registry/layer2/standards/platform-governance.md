@@ -17,6 +17,7 @@
 - governance 판단은 운영 정책과 감사/위반 처리의 표준화에 한정한다.
 - 업무 승인, 게시글 권한, workspace membership 같은 도메인 사실 판단은 소비자 서비스 책임이다.
 - security/resource event를 governance audit으로 연결하는 bridge는 `platform-integrations`에서 제공한다.
+- production profile 기본값은 다른 runtime platform과 동일해야 한다.
 
 ## 1계층 조립 기준
 
@@ -60,3 +61,4 @@
 - 운영에서는 audit sink/context/service identity, `PolicyConfigSource.operationalStatus()`, fatal handler 정책을 fail-fast 대상으로 본다.
 - `platform-governance-core`는 Spring/audit/violation wrapper 없는 pure Java reference engine으로 유지한다.
 - bridge가 필요한 소비자는 `platform-integrations`의 bridge artifact를 명시적으로 추가한다.
+- production profile 기본값은 `["prod", "production"]`를 사용한다.
