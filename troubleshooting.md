@@ -14,18 +14,18 @@
 
 ## 현재 published 기준
 
-- `platform-security`: `3.0.0`
-- `platform-resource`: `3.0.0`
-- `platform-governance`: `3.0.0`
-- `platform-integrations`: `3.0.0`
-- `platform-runtime-bom`: `3.0.0`
-- `platform-security-governance-bridge`: `3.0.0`
-- `platform-resource-governance-bridge`: `3.0.0`
+- `platform-security`: `3.0.1`
+- `platform-resource`: `3.0.1`
+- `platform-governance`: `3.0.1`
+- `platform-integrations`: `3.0.1`
+- `platform-runtime-bom`: `3.0.1`
+- `platform-security-governance-bridge`: `3.0.1`
+- `platform-resource-governance-bridge`: `3.0.1`
 
 ## 읽는 방법
 
 - 이 문서 아래의 `2.x`, `1.x` 버전과 publish 실패 이력은 migration history로 남긴 것이다.
-- 현재 stage-5 baseline과 소비 기준은 `3.0.0` release train 문서와 각 repository README를 source-of-truth로 본다.
+- 현재 stage-5 baseline과 소비 기준은 `3.0.1` release train 문서와 각 repository README를 source-of-truth로 본다.
 
 ## 현재 stage-5 계약 요약
 
@@ -33,7 +33,7 @@
 - `platform-security`는 base `platform-security-starter`와 optional add-on(`platform-security-auth-bridge-starter`, `platform-security-ratelimit-bridge-starter`, `platform-security-web-api`, `platform-security-legacy-compat`, `platform-security-hybrid-web-adapter`, `platform-security-client`) 구조를 사용한다.
 - `platform-governance`의 공식 감사 출력 SPI는 `AuditSink`이고, `AuditLogRecorder`는 governance internal adapter seam으로만 본다.
 - `platform-resource`와 `platform-governance` starter는 stage-5 compile classpath 기준에서 core/engine/adapter 구현을 서비스 compile surface에 직접 새지 않는다.
-- cross-platform 조합과 bridge version은 `platform-runtime-bom:3.0.0` release train을 source-of-truth로 본다.
+- cross-platform 조합과 bridge version은 `platform-runtime-bom:3.0.1` release train을 source-of-truth로 본다.
 
 ## 이번 작업의 목표
 

@@ -3,7 +3,7 @@
 ## 기준
 
 - GitHub: https://github.com/jho951/platform-resource
-- Version: `3.0.0`
+- Version: `3.0.1`
 - 계층: 2계층 platform
 - registry 기준: [../../../registry/layer2/README.md](../../../registry/layer2/README.md)
 - platform 표준: [../../../registry/layer2/standards/platform-resource.md](../../../registry/layer2/standards/platform-resource.md)
@@ -69,7 +69,7 @@
 - `fileStorageVersion=2.0.0`
 - `notificationApiVersion=2.0.0`
 - `notificationCoreVersion=2.0.1`
-- `release_version=3.0.0`
+- `release_version=3.0.1`
 
 ## 실무 기준
 
@@ -93,7 +93,7 @@
 - production profile 기본값은 `prod`, `production`으로 통일됐다.
 - `platform-resource-spi`는 2계층 내부 port 역할을 유지하고, 1계층 storage/notification 타입은 adapter layer에만 남긴다.
 - `platform-resource-jdbc-relay`는 공식 published/module surface로 유지한다.
-- README, usage, private-publish 예시는 `3.0.0` 기준으로 정리됐다.
-- 구현 레포 `main` push와 `v3.0.0` publish까지 완료됐다.
-- `platform-resource-governance-bridge:3.0.0`는 `platform-resource 3.0.0`, `platform-governance 3.0.0`, `platform-integrations 3.0.0` release train 기준으로 publish 완료 상태다.
+- README, usage, private-publish 예시는 `3.0.1` 기준으로 정리됐다.
+- 구현 레포 `main` push와 `v3.0.1` publish까지 완료됐다.
+- `platform-resource-governance-bridge:3.0.1`는 `platform-resource 3.0.1`, `platform-governance 3.0.1`, `platform-integrations 3.0.1` release train 기준으로 publish 완료 상태다.
 - `v2.0.1` publish 실패와 `v2.0.2` 재배포 경위는 과거 이력으로 [troubleshooting.md](../../../troubleshooting.md)에 남긴다.

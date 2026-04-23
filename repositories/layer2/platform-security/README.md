@@ -3,7 +3,7 @@
 ## 기준
 
 - GitHub: https://github.com/jho951/platform-security
-- Version: `3.0.0`
+- Version: `3.0.1`
 - 계층: 2계층 platform
 - registry 기준: [../../../registry/layer2/README.md](../../../registry/layer2/README.md)
 - platform 표준: [../../../registry/layer2/standards/platform-security.md](../../../registry/layer2/standards/platform-security.md)
@@ -88,7 +88,7 @@
 - `auth_version=3.0.1`
 - `ipGuard_version=3.0.0`
 - `rateLimiter_version=2.0.0`
-- `release_version=3.0.0`
+- `release_version=3.0.1`
 
 ## 실무 기준
 
@@ -120,5 +120,5 @@
 - `OperationalSecurityPolicyEnforcer`는 preset-aware 규칙과 명시적 예외 스위치 기준으로 재구성됐다.
 - 공식 gateway hybrid adapter module은 Servlet `PlatformSecurityGatewayIntegration`과 WebFlux `PlatformSecurityReactiveGatewayIntegration`을 함께 제공한다.
 - production profile 기본값은 `prod`, `production`으로 통일됐다.
-- 구현 레포 `main` push와 `v3.0.0` publish workflow 성공까지 완료됐다.
-- `platform-security-governance-bridge:3.0.0`는 `platform-security 3.0.0`, `platform-governance 3.0.0`, `platform-integrations 3.0.0` release train 기준으로 publish 완료 상태다.
+- 구현 레포 `main` push와 `v3.0.1` publish workflow 성공까지 완료됐다.
+- `platform-security-governance-bridge:3.0.1`는 `platform-security 3.0.1`, `platform-governance 3.0.1`, `platform-integrations 3.0.1` release train 기준으로 publish 완료 상태다.

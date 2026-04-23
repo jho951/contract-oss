@@ -3,7 +3,7 @@
 ## 기준
 
 - GitHub: https://github.com/jho951/platform-governance
-- Version: `3.0.0`
+- Version: `3.0.1`
 - 계층: 2계층 platform
 - registry 기준: [../../../registry/layer2/README.md](../../../registry/layer2/README.md)
 - platform 표준: [../../../registry/layer2/standards/platform-governance.md](../../../registry/layer2/standards/platform-governance.md)
@@ -33,8 +33,8 @@
 - `auditLogVersion=2.0.0`
 - `policyConfigVersion=2.0.0`
 - `pluginPolicyEngineVersion=2.0.1`
-- `release_version=3.0.0`
-- `platformReleaseVersion=3.0.0`
+- `release_version=3.0.1`
+- `platformReleaseVersion=3.0.1`
 
 ## 현재 모듈
 
@@ -92,14 +92,14 @@
 
 ## 의존성 pin 기준
 
-- `platform-governance 3.0.0`의 현재 published 기준 pin은 `auditLogVersion=2.0.0`, `policyConfigVersion=2.0.0`, `pluginPolicyEngineVersion=2.0.1`이다.
+- `platform-governance 3.0.1`의 현재 published 기준 pin은 `auditLogVersion=2.0.0`, `policyConfigVersion=2.0.0`, `pluginPolicyEngineVersion=2.0.1`이다.
 - 따라서 `oss-contract`는 1계층 최신 `main` 버전이 아니라, 2계층 `platform-governance`가 실제로 pin한 published 좌표를 SoT로 본다.
 
 ## 현재 상태
 
-- 현재 릴리스 기준은 `3.0.0`이다.
+- 현재 릴리스 기준은 `3.0.1`이다.
 - 서비스의 공식 감사 출력 SPI는 `AuditSink`다.
 - `platform-integrations` bridge는 서비스가 등록한 `AuditSink`에 직접 쓰지 않고 governance 내부 `AuditLogRecorder` bean을 통해 기록한다.
 - 따라서 서비스는 custom `AuditLogRecorder`가 아니라 계속 `AuditSink`를 등록한다.
 - `platform-governance-starter`만으로는 `AuditSink` 타입이 compile surface에 자동 노출되지 않으므로, SPI를 직접 구현하는 서비스는 `audit-log-api`를 별도 의존성으로 가진다.
-- 구현 레포 `main` push와 `v3.0.0` publish까지 완료됐다.
+- 구현 레포 `main` push와 `v3.0.1` publish까지 완료됐다.
