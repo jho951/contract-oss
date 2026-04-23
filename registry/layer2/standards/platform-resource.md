@@ -21,10 +21,12 @@
 ## platform 소유 경계 기준
 
 - `platform-resource-core`와 starter는 `file-storage`, `notification` 1계층 타입을 직접 import하지 않는다.
+- starter/autoconfigure compile surface는 `platform-resource-api`, `platform-resource-spi` 같은 공식 소비 표면으로 닫고, `platform-resource-core` 구현을 서비스 compile classpath에 직접 새지 않게 한다.
 - storage vendor 차이는 `ResourceContentStore`, `ResourceBinaryStorePort` 같은 platform port 뒤로 숨긴다.
 - lifecycle 이후 알림이나 후속 전달은 `ResourceLifecyclePublisher`, `ResourceNotificationPort` 같은 platform 계약 뒤로 숨긴다.
 - `platform-resource-adapter-filestorage`, `platform-resource-adapter-notification`, `platform-resource-jdbc` 같은 adapter 모듈만 1계층 타입과 platform port를 함께 안다.
 - 서비스는 backing store adapter를 선택할 수는 있지만 `FileStorage`, `NotificationDispatcher` 같은 1계층 타입을 직접 import하지 않는다.
+- relay/retry/backoff/metrics/scheduler 같은 운영 전달 책임은 공식 relay module이 소유해야 하며, 서비스가 service-owned outbox worker나 notification fan-out seam을 직접 유지하는 구조는 stage-5 경계로 보지 않는다.
 
 ## Runtime View Model Rule
 
@@ -66,6 +68,7 @@
 ## 확장 규칙
 
 - 소비자는 `platform-resource-starter`와 resource kind 정책을 기본 진입점으로 사용한다.
+- stage-5 소비자는 `platform-resource-starter`, 공식 add-on, `platform-resource-api`, `platform-resource-spi`, 공식 customizer만 보고 붙을 수 있어야 하며 `platform-resource-core`를 직접 import하지 않는다.
 - storage backend 차이는 `ResourceContentStore` 구현이나 adapter로 흡수한다.
 - catalog backend 차이는 `ResourceCatalog` 구현으로 흡수한다.
 - notification은 lifecycle 부수효과 orchestration에 한정하고, 도메인별 업무 처리는 소비자 override나 별도 handler가 담당한다.
@@ -73,6 +76,7 @@
 - JDBC outbox를 제공한다면 optional relay module도 공식 제공할 수 있다.
 - outbox relay module은 scheduler, batch pending 조회, publish fan-out, retry/backoff, metrics 같은 운영 보조 책임을 가진다.
 - auto-configuration은 `@ConditionalOnMissingBean`만으로 닫지 않고 `PlatformResourceCustomizer`, `ResourcePolicyCustomizer`, `ResourceLifecycleCustomizer`, `ResourceAccessCustomizer` 같은 공식 확장 훅을 둘 수 있다.
+- stage-5 기준에서는 서비스가 `ResourceService`, 공식 customizer, 공식 relay module만 소비하고 file-storage/notification bridge나 relay assembler를 따로 들고 있지 않아야 한다.
 
 ## 운영 프로필 기준
 

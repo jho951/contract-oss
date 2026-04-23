@@ -15,8 +15,8 @@
 - 2계층 `platform-security`는 1계층 OSS를 조합하는 내부 비공개 platform layer로 취급한다.
 - 2계층은 범용 설계를 유지하되 외부 공개 라이브러리처럼 소비되는 계층이 아니다.
 - 2계층의 공개 표면은 내부 소비자 공통 사용을 전제로 한다.
-- 확장은 `properties`, `customizer`, `override bean`, 단일 starter, service role preset을 통해 제공한다.
-- 현재 소비 진입점은 단일 `platform-security-starter`와 `platform.security.service-role-preset`이다.
+- 확장은 `properties`, `customizer`, `override bean`, base starter, sanctioned add-on, service role preset을 통해 제공한다.
+- 현재 소비 진입점은 base `platform-security-starter`, optional add-on, `platform.security.service-role-preset`이다.
 - 2계층은 소비자별 비즈니스 로직, 도메인 권한 판단, 회원가입, 로그인 화면, 특정 URL, Redis key 규칙을 포함하지 않는다.
 - `policy-config`, audit pipeline, feature flag config 호환 기준의 owner는 `platform-governance`다.
 - `platform-security`는 보안 평가와 보안 event/publisher 계약을 소유하고, governance audit 기록 구현은 소유하지 않는다.
@@ -43,6 +43,8 @@
 - `OperationalSecurityPolicyEnforcer` 같은 policy는 `PlatformAuthenticationDecision`, `PlatformRateLimitDecision` 같은 platform 소유 decision만 보고 판단한다.
 - `PlatformSecurityAutoConfiguration`의 auth wiring은 raw `com.auth.*` bean graph에 직접 결합하지 않고 platform 소유 auth adapter/resolver 계약을 통해 조립한다.
 - `@ConditionalOnBean`과 운영 guard는 1계층 bean 존재 여부가 아니라 platform 소유 bean 존재 여부를 기준으로 동작해야 한다.
+- selection mode의 기본 정책 조립은 ordered `SecurityPolicy` bean을 additive하게 수집해야 하며, 서비스가 policy 추가만을 위해 service-owned `SecurityPolicyService` assembler를 만들지 않게 해야 한다.
+- internal legacy credential 호환이 필요하면 `InternalServiceCompatibilityAuthenticationAdapter` 같은 platform-owned compat seam으로 흡수하고, 서비스 filter/controller가 legacy secret을 직접 읽는 구조는 표준 경계로 보지 않는다.
 
 ## Runtime View Model Rule
 
@@ -60,15 +62,19 @@
 - `platform-policy-api`
 - `platform-security-policy`
 - `platform-security-api`
+- `platform-security-web-api`
 - `platform-security-ports`
 - `platform-security-adapter-auth`
+- `platform-security-auth-bridge-starter`
 - `platform-security-ip`
 - `platform-security-adapter-ratelimiter`
+- `platform-security-ratelimit-bridge-starter`
 - `platform-security-core`
 - `platform-security-web`
 - `platform-security-autoconfigure`
 - `platform-security-issuer-autoconfigure`
 - `platform-security-internal-autoconfigure`
+- `platform-security-legacy-compat`
 - `platform-security-policyconfig-bridge`
 - `platform-security-starter`
 - `platform-security-support-local`
@@ -89,7 +95,7 @@
 - downstream identity propagation
 - Spring Boot auto-configuration
 - auth wiring 추가 추상화
-- 단일 starter와 service role preset
+- base starter, sanctioned add-on, service role preset
 - 운영 fail-fast 정책
 - 소비자별 override point
 - 실패 응답 표준화
@@ -105,6 +111,7 @@
 - `status=A`는 `STATUS_A`와 함께 `STATUS_ACTIVE` authority로 표현한다.
 - gateway header 인증은 `platform.security.auth.gateway-header.enabled=true`일 때 활성화한다.
 - gateway header 인증은 `X-User-Id`, `X-User-Status`를 읽어 Servlet에서는 Spring Security `Authentication`, WebFlux에서는 `GatewayUserPrincipal` 기반 principal을 만든다.
+- `X-User-Id`는 gateway/platform 간 공통 문자열 principal 식별자로 취급하고 UUID로 강제 파싱하지 않는다.
 - Servlet gateway header 인증 filter는 `FilterRegistrationBean#setEnabled(false)`로 Boot servlet filter 중복 등록을 막고 Spring Security filter chain 안에서만 동작해야 한다.
 - 401/403 응답은 기본 `AuthenticationEntryPoint`, `AccessDeniedHandler`를 통해 `SecurityFailureResponseWriter` 흐름으로 연결한다.
 - servlet filter 순서는 `BearerTokenAuthenticationFilter` 뒤에 gateway header 인증 filter를 두고, 그 뒤에 `PlatformSecurityServletFilter`를 둔다.
@@ -138,6 +145,7 @@
 - 모듈 추가는 responsibility first로 한다.
 - 1계층 내부 구현을 2계층에서 재정의하지 않는다.
 - starter 추가는 역할이 분명할 때만 허용한다.
+- base starter는 inbound 보안 runtime만 포함하고, outbound/client, raw auth bridge, raw rate-limit bridge, legacy compat, hybrid gateway 조립은 sanctioned optional add-on으로 분리한다.
 - governance audit bridge는 `platform-security` 본체가 아니라 `platform-integrations`에서 제공한다.
 - `platform-security` 본체는 `platform-governance` 구현체를 직접 의존하지 않는다.
 - 소비자 서비스가 직접 인증 조립을 override할 때도 public bean override 경계를 사용하고 platform filter 순서를 깨지 않는다.
@@ -145,8 +153,10 @@
 - hybrid adapter는 `SecurityPolicyService`, `SecurityIngressAdapter`, auth adapter, rate-limit decision adapter, failure writer, audit publisher처럼 gateway가 직접 소비할 안전한 조립 포인트만 노출해야 한다.
 - gateway 통합은 hybrid adapter를 공식 표면으로 사용하고 `platform-security-core`나 `platform-security-web` 내부 wiring을 직접 재조립하지 않는다.
 - hybrid adapter는 Servlet용 `PlatformSecurityGatewayIntegration`과 WebFlux용 `PlatformSecurityReactiveGatewayIntegration`을 공식 표면으로 제공할 수 있다.
-- strict 목표는 gateway가 `SecurityIngressAdapter` 같은 내부 bean graph 대신 `HybridSecurityRuntime`, `HybridFailureResponseContract`, `HybridHeaderAuthenticationAdapter` 같은 platform-owned runtime surface만 보도록 수렴하는 것이다.
+- hybrid adapter의 stage-5 기본 표면은 `HybridSecurityRuntime`, `HybridRouteSecurityPolicy`, `HybridFailureResponseContract`, `HybridHeaderAuthenticationAdapter`다.
+- strict 목표는 gateway가 `SecurityIngressAdapter` 같은 내부 bean graph 대신 위 platform-owned runtime surface만 보도록 수렴하는 것이다.
 - gateway가 `platform-security-core`나 `platform-security-web` 내부 구현을 직접 조립하는 방식은 표준 경계로 보지 않는다.
+- 공식 runtime surface가 존재하는데도 service-owned bridge filter, service-owned policy assembler, service-owned internal authenticator wrapper가 남아 있으면 stage-5 완료로 보지 않는다.
 
 ## 운영 프로필과 fail-fast 기준
 

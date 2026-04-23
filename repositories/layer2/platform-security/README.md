@@ -24,7 +24,7 @@
 - `PlatformSecurityAutoConfiguration`의 auth wiring 추상화
 - 401/403 실패 응답 writer 연결과 Servlet/WebFlux ingress 조립
 - Spring Boot 자동 구성
-- 단일 starter와 `service-role-preset`
+- base starter, sanctioned add-on, `service-role-preset`
 - 내부 소비자 공통 보안 진입점
 - governance audit bridge가 소비할 수 있는 security audit event/publisher 계약
 - 보안 평가와 보안 event 발행 경계
@@ -36,15 +36,19 @@
 - `platform-policy-api`
 - `platform-security-policy`
 - `platform-security-api`
+- `platform-security-web-api`
 - `platform-security-ports`
 - `platform-security-adapter-auth`
+- `platform-security-auth-bridge-starter`
 - `platform-security-ip`
 - `platform-security-adapter-ratelimiter`
+- `platform-security-ratelimit-bridge-starter`
 - `platform-security-core`
 - `platform-security-web`
 - `platform-security-autoconfigure`
 - `platform-security-issuer-autoconfigure`
 - `platform-security-internal-autoconfigure`
+- `platform-security-legacy-compat`
 - `platform-security-policyconfig-bridge`
 - `platform-security-starter`
 - `platform-security-support-local`
@@ -89,6 +93,7 @@
 ## 실무 기준
 
 - 소비자는 `platform-security-starter`와 `platform.security.service-role-preset`을 기본 진입점으로 사용한다.
+- `platform-security-client`, `platform-security-auth-bridge-starter`, `platform-security-ratelimit-bridge-starter`, `platform-security-web-api`, `platform-security-legacy-compat`, `platform-security-hybrid-web-adapter`는 optional add-on으로만 사용한다.
 - `edge`, `issuer`, `api-server`, `internal-service` preset은 artifact 선택이 아니라 설정 선택이다.
 - 공개 auth 계약은 `platform-security-ports`의 `PlatformIssueTokenCommand`, `PlatformIssueSessionCommand`, `PlatformIssuedToken`, `PlatformSessionView` 같은 runtime view와 port 기준으로 사용한다.
 - 기본 JWT 검증은 `platform.security.auth.jwt-secret`, `jwt-issuer`, `jwt-audience`로 구성한다.
@@ -102,6 +107,7 @@
 - 운영에서는 platform 소유 token/session/rate-limit port와 trusted proxy CIDR를 preset-aware fail-fast 대상으로 본다.
 - `EDGE`/`API_SERVER`, `INTERNAL_SERVICE`, `ISSUER`는 같은 ingress 규칙으로 묶지 않고 preset별로 다르게 판정한다.
 - gateway처럼 starter 기본 filter auto-registration을 그대로 쓰기 어려운 서비스는 `platform-security-hybrid-web-adapter`를 공식 gateway 통합 표면으로 사용한다. Servlet은 `PlatformSecurityGatewayIntegration`, WebFlux는 `PlatformSecurityReactiveGatewayIntegration`을 사용한다.
+- base starter는 inbound runtime만 포함하고, `platform-security-client`는 더 이상 기본 starter에 포함되지 않는다.
 - security event를 governance audit으로 남겨야 할 때만 `platform-integrations`의 `platform-security-governance-bridge`를 추가한다.
 - `/users/me` active 상태 확인처럼 서비스 DB 사실에 의존하는 도메인 정책은 소비자 서비스가 소유한다.
 - `policy-config`, audit pipeline, feature flag config 호환 기준의 owner는 `platform-governance`다.
@@ -115,4 +121,4 @@
 - 공식 gateway hybrid adapter module은 Servlet `PlatformSecurityGatewayIntegration`과 WebFlux `PlatformSecurityReactiveGatewayIntegration`을 함께 제공한다.
 - production profile 기본값은 `prod`, `production`으로 통일됐다.
 - 구현 레포 `main` push와 `v3.0.0` publish workflow 성공까지 완료됐다.
-- `platform-security-governance-bridge:2.0.0`는 `platform-security 3.0.0`, `platform-governance 3.0.0` 기준으로 publish 완료 상태다.
+- `platform-security-governance-bridge:3.0.0`는 `platform-security 3.0.0`, `platform-governance 3.0.0`, `platform-integrations 3.0.0` release train 기준으로 publish 완료 상태다.

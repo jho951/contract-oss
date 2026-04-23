@@ -76,9 +76,11 @@
 ## 실무 기준
 
 - 소비자는 `platform-governance-starter`와 `platform.governance.service-role-preset`을 기본 진입점으로 사용한다.
+- compile classpath stage-5 기준에서 `platform-governance-starter`는 `platform-governance-core`, `platform-governance-engine`, adapter 구현을 직접 새지 않는다.
 - `identity-service`, `policy-decision-service`, `resource-service`, `observability-service` preset은 이름이 아니라 governance 주 역할이다.
 - identity 역할 소비자는 범용 audit entry를 직접 만들기보다 `IdentityAuditRecorder`를 우선 사용한다.
 - production 감사 출력 대상은 `AuditSink`를 공식 SPI로 보고, `AuditLogRecorder`는 governance event를 audit pipeline으로 넘기는 adapter로 본다.
+- 서비스가 `AuditSink`, `AuditLogger`, `AuditEvent`를 코드에서 직접 import하면 `io.github.jho951:audit-log-api`를 명시적으로 추가한다.
 - 정책 평가는 platform `GovernancePolicyPlugin` 또는 `GovernanceDecisionEngine`으로 확장하고, audit 기록과 violation handling 골격은 platform에 둔다.
 - `platform-governance-core`는 Spring/audit/violation wrapper 없는 pure Java reference engine으로 유지한다.
 - feature flag config 설정 prefix는 `platform.governance.feature-flags.*`를 사용하고, 기존 `platform.governance.plugin-policy-engine.*`는 deprecated alias로만 유지한다.
@@ -99,4 +101,5 @@
 - 서비스의 공식 감사 출력 SPI는 `AuditSink`다.
 - `platform-integrations` bridge는 서비스가 등록한 `AuditSink`에 직접 쓰지 않고 governance 내부 `AuditLogRecorder` bean을 통해 기록한다.
 - 따라서 서비스는 custom `AuditLogRecorder`가 아니라 계속 `AuditSink`를 등록한다.
+- `platform-governance-starter`만으로는 `AuditSink` 타입이 compile surface에 자동 노출되지 않으므로, SPI를 직접 구현하는 서비스는 `audit-log-api`를 별도 의존성으로 가진다.
 - 구현 레포 `main` push와 `v3.0.0` publish까지 완료됐다.

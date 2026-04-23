@@ -1,6 +1,6 @@
 # OSS / Platform Troubleshooting
 
-이 문서는 2026-04-22 기준으로 1계층 OSS와 2계층 platform 경계를 맞추는 과정에서 실제로 확인한 문제, 변경 이유, 수정 내역, 현재 상태를 정리한 기록이다.
+이 문서는 2026-04-23 기준으로 1계층 OSS와 2계층 platform 경계를 맞추는 과정에서 실제로 확인한 문제, 변경 이유, 수정 내역, 현재 상태를 정리한 기록이다.
 
 이번 턴에서 새로 확인한 내용뿐 아니라, 이전 작업에서 남겨두지 못했던 release/publish 이력과 실패 원인도 함께 적는다.
 
@@ -17,9 +17,23 @@
 - `platform-security`: `3.0.0`
 - `platform-resource`: `3.0.0`
 - `platform-governance`: `3.0.0`
-- `platform-integrations`: `2.0.0`
-- `platform-security-governance-bridge`: `2.0.0`
-- `platform-resource-governance-bridge`: `2.0.0`
+- `platform-integrations`: `3.0.0`
+- `platform-runtime-bom`: `3.0.0`
+- `platform-security-governance-bridge`: `3.0.0`
+- `platform-resource-governance-bridge`: `3.0.0`
+
+## 읽는 방법
+
+- 이 문서 아래의 `2.x`, `1.x` 버전과 publish 실패 이력은 migration history로 남긴 것이다.
+- 현재 stage-5 baseline과 소비 기준은 `3.0.0` release train 문서와 각 repository README를 source-of-truth로 본다.
+
+## 현재 stage-5 계약 요약
+
+- service consumer는 `starter + sanctioned add-on + public SPI`만 기준으로 붙고, `core/internal/autoconfigure` 구현 세부사항을 직접 알지 않는다.
+- `platform-security`는 base `platform-security-starter`와 optional add-on(`platform-security-auth-bridge-starter`, `platform-security-ratelimit-bridge-starter`, `platform-security-web-api`, `platform-security-legacy-compat`, `platform-security-hybrid-web-adapter`, `platform-security-client`) 구조를 사용한다.
+- `platform-governance`의 공식 감사 출력 SPI는 `AuditSink`이고, `AuditLogRecorder`는 governance internal adapter seam으로만 본다.
+- `platform-resource`와 `platform-governance` starter는 stage-5 compile classpath 기준에서 core/engine/adapter 구현을 서비스 compile surface에 직접 새지 않는다.
+- cross-platform 조합과 bridge version은 `platform-runtime-bom:3.0.0` release train을 source-of-truth로 본다.
 
 ## 이번 작업의 목표
 

@@ -14,12 +14,13 @@
 - `platform-integrations`는 2계층 optional integration platform이다.
 - formal docs에서는 repository 역할을 `optional integration platform`으로 부른다.
 - individual published module은 `bridge module` 또는 `bridge artifact`로 부른다.
-- bridge는 source platform의 공개 event/publisher 계약과 target platform의 공개 recorder 계약만 사용한다.
+- bridge는 source platform의 공개 event/publisher 계약과 target platform의 공개 SPI 및 target-owned internal adapter seam만 사용한다.
 - bridge는 소비자 비즈니스 로직, 도메인 권한 판단, 소비자별 policy key를 포함하지 않는다.
 - bridge는 본체 platform의 release 단위와 독립적으로 release할 수 있다.
 - bridge는 두 platform을 모두 쓰는 소비자가 `implementation`으로 명시할 때만 활성화된다.
 - bridge는 source/target platform을 대신 enable하지 않는다.
 - bridge는 각 platform의 내부 bean graph나 1계층 raw 타입을 직접 기준으로 삼지 않는다.
+- 두 core runtime 사이의 optional migration/compatibility seam이 서비스에 남아 있다면, 그것은 service-owned가 아니라 bridge artifact나 platform-owned compat surface로 옮겨야 한다.
 
 ## 현재 모듈 기준
 
@@ -54,14 +55,15 @@
 
 ## 정합성 기준
 
-- `platform-security-governance-bridge`는 `SecurityAuditPublisher`와 `AuditLogRecorder` 계약으로만 연결한다.
-- `platform-resource-governance-bridge`는 `ResourceLifecyclePublisher`와 `AuditLogRecorder` 계약으로만 연결한다.
+- `platform-security-governance-bridge`는 `SecurityAuditPublisher`와 `platform-governance-adapter-auditlog`가 만든 내부 `AuditLogRecorder` bean으로만 연결한다.
+- `platform-resource-governance-bridge`는 `ResourceLifecyclePublisher`와 `platform-governance-adapter-auditlog`가 만든 내부 `AuditLogRecorder` bean으로만 연결한다.
 - `platform-resource-governance-bridge` source, tests, build script, publish configuration, artifact version, release tag는 `platform-integrations`가 소유한다.
 - `platform-resource`는 `ResourceLifecycleEvent`, `ResourceLifecyclePublisher`, lifecycle publisher composition, lifecycle mode fail-fast rule만 소유한다.
 - bridge가 필요하더라도 source platform 본체가 target platform 구현체를 직접 의존하도록 만들면 안 된다.
-- 연결 대상 platform version은 `gradle.properties`에 exact version으로 pin한다.
-- bridge release version은 `platform-integrations`의 `release_version`으로 관리한다.
+- 지원 조합 version은 `platform-runtime-bom`이 source-of-truth로 고정한다.
+- bridge release version은 `platform-integrations`의 `release_version`과 같은 release train으로 관리한다.
 - publish는 bridge module 단위로 수행할 수 있다.
+- stage-5 기준에서는 core runtime과 서비스가 duplicate bridge/compat adapter를 들고 있지 않고, cross-platform seam은 이 저장소 artifact로 수렴해야 한다.
 
 ## 실무 판단 기준
 

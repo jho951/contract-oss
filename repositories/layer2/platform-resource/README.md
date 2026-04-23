@@ -75,6 +75,7 @@
 
 - 소비자는 `platform-resource-starter`와 resource kind 정책을 기본 진입점으로 사용한다.
 - `platform-resource`는 단순 file wrapper가 아니라 owner, kind, catalog, metadata, access, delete, lifecycle event, notification orchestration이 필요한 resource runtime이다.
+- compile classpath stage-5 기준에서 `platform-resource-starter`와 `platform-resource-autoconfigure`는 `platform-resource-core` 구현을 서비스 compile surface에 직접 새지 않는다.
 - resource 생성 권한은 소비자가 판단하고, resource layer는 저장 이후 kind 선언, MIME/size, catalog, lifecycle 정책을 검증한다.
 - usage/private-publish 문서는 `platform-resource-starter`, `platform-resource-jdbc-relay`, customizer 확장 경계처럼 실제 publish된 소비 표면만 예시로 든다.
 - 운영에서는 `platform.resource.mode=local`, 빈 kind 정책, backing `ResourceContentStore`/`ResourceCatalog` 누락을 fail-fast 대상으로 본다.
@@ -94,5 +95,5 @@
 - `platform-resource-jdbc-relay`는 공식 published/module surface로 유지한다.
 - README, usage, private-publish 예시는 `3.0.0` 기준으로 정리됐다.
 - 구현 레포 `main` push와 `v3.0.0` publish까지 완료됐다.
-- `platform-resource-governance-bridge:2.0.0`는 `platform-resource 3.0.0`, `platform-governance 3.0.0` 기준으로 publish 완료 상태다.
+- `platform-resource-governance-bridge:3.0.0`는 `platform-resource 3.0.0`, `platform-governance 3.0.0`, `platform-integrations 3.0.0` release train 기준으로 publish 완료 상태다.
 - `v2.0.1` publish 실패와 `v2.0.2` 재배포 경위는 과거 이력으로 [troubleshooting.md](../../../troubleshooting.md)에 남긴다.

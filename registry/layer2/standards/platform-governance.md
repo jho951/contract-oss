@@ -6,7 +6,7 @@
 
 - `audit-log`, `policy-config` 1계층 OSS와 `plugin-policy-engine-config` 호환 기준을 조립하는 표준 2계층을 정의한다.
 - 운영 정책, 감사 기록, 정책 평가와 위반 대응의 공통 runtime을 제공한다.
-- security/resource 같은 다른 platform이 직접 governance 구현을 알지 않아도 되는 공개 recorder/API 경계를 제공한다.
+- security/resource 같은 다른 platform이 직접 governance 구현을 알지 않아도 되는 공개 SPI와 platform-owned audit adapter 경계를 제공한다.
 
 ## 계층 원칙
 
@@ -25,6 +25,7 @@
 - 서비스 확장은 `AuditSink`, `PolicyConfigSource`, `GovernanceDecisionEngine`, `ViolationHandler` 같은 공식 SPI로 닫는다.
 - 서비스가 `AuditLogRecorder` 같은 내부 adapter bean을 직접 override해야만 동작하는 구조는 허용하지 않는다.
 - audit-log, policy-config, plugin-policy-engine-config를 아는 코드는 adapter/autoconfigure 계층으로 한정한다.
+- stage-5 기준에서는 서비스가 service-owned audit/config compatibility adapter를 직접 유지하지 않고, migration seam이 필요하면 governance 또는 integrations가 공식 compat surface로 소유해야 한다.
 
 ## Owner Rule
 
@@ -47,7 +48,7 @@
 - 정책 변경 기록
 - 위반 대응 handler 실행
 - service role preset 기반 운영 기본값
-- `AuditSink`, `AuditLogRecorder` 같은 integration API
+- `AuditSink`, `PolicyConfigSource`, `ViolationHandler` 같은 공식 SPI
 - 운영 fail-fast 정책
 
 ## 포함하지 말아야 할 것
@@ -63,11 +64,12 @@
 ## 확장 규칙
 
 - 감사 출력 대상은 `AuditSink`를 공식 SPI로 본다.
-- `AuditLogRecorder`는 governance event를 audit pipeline으로 넘기는 adapter 계약으로 본다.
+- `AuditLogRecorder`는 `platform-governance-adapter-auditlog` 내부 seam이며 governance event를 audit pipeline으로 넘기는 adapter 계약으로만 본다.
 - 정책 평가는 platform `GovernancePolicyPlugin` 또는 `GovernanceDecisionEngine`으로 확장한다.
 - audit 기록과 violation handling 골격은 platform이 소유한다.
 - feature flag config 설정 prefix는 `platform.governance.feature-flags.*`를 사용한다.
 - 기존 `platform.governance.plugin-policy-engine.*`는 deprecated alias로만 유지한다.
+- 공식 SPI가 존재하는데도 서비스가 `AuditLogRecorder` fan-out, 내부 config wiring, compat adapter를 extension point처럼 직접 소유하면 stage-5 완료로 보지 않는다.
 
 ## 운영 기준
 
