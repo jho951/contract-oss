@@ -155,156 +155,92 @@
   - publish 실패가 코드 문제인지 workflow 문제인지 분리되지 않던 문제
 - 이번 턴의 수정은 이 여섯 축을 다시 현재 구현 기준으로 닫는 작업이었다.
 
-## 실제 변경
+## 이번 턴에서 실제로 발생한 오류
 
-## 1. `platform-security`
+### 1. `platform-governance-samples` 부팅 실패
 
-### 코드 변경
+- 증상:
+  - `NoClassDefFoundError: io.github.jho951.platform.governance.spring.PlatformGovernanceProperties`
+  - `Error processing condition on io.github.jho951.platform.governance.spring.PlatformGovernanceAutoConfiguration.platformGovernanceClock`
+- 발생 맥락:
+  - stage-5 compile surface 정리 후 `ApplicationContextRunner` 기반 sample consumer를 다시 검증하는 과정에서 발생했다.
+- 원인:
+  - `platform-governance-autoconfigure` 하위 build output이 stale 상태였고, `@ConditionalOnMissingBean` 타입 추론이 필요한 시점에 `PlatformGovernanceProperties`가 누락된 것처럼 보였다.
+- 조치:
+  - `./gradlew :platform-governance-autoconfigure:clean :platform-governance-autoconfigure:compileJava`
+  - 이후 `./gradlew :platform-governance-samples:test` 재실행
+- 판단:
+  - stage-5 starter 계약 자체의 설계 결함이 아니라 local build artifact 불일치였다.
 
-- `platform-security-auth`에 platform-owned auth 타입 추가
-  - `PlatformAuthenticatedPrincipal`
-  - `PlatformOAuth2UserIdentity`
-  - `AuthPrincipalAdapters`
-  - `PlatformSessionSupportFactory`
-  - `DefaultPlatformSessionSupportFactory`
-- 공개 auth 계약이 위 platform-owned 타입을 기준으로 동작하도록 정리
-- 제거 전까지 공개 노출이 남는 `com.auth.*` 의존성은 `api` 범위로 승격
-- `PlatformSecurityAutoConfiguration` auth wiring을 platform-owned factory 기준으로 추상화
-- `PlatformRateLimitPort`를 service-facing 계약으로 세우고 `PlatformRateLimitAdapter`는 raw `RateLimiter`를 감싸는 adapter marker로만 남기도록 변경
-  - `PlatformRateLimitRequest`
-  - `PlatformRateLimitDecision`
-  - `PlatformRateLimitKeyType`
-- policy와 facade가 platform-owned rate-limit 계약만 보도록 수정
-- `platform-security-hybrid-web-adapter`에 공식 gateway 통합 표면 추가
-  - `PlatformSecurityGatewayIntegration`
-  - auto-configuration package 정리
+### 2. `platform-integrations` publish workflow가 `platform-runtime-bom`을 처리하지 못함
 
-### 문서 변경
+- 증상:
+  - module publish workflow가 모든 모듈에 `:module:test`를 강제했다.
+  - `platform-runtime-bom`은 `java-platform` 모듈이라 `test` task가 없어 release train publish가 실패하는 구조였다.
+- 원인:
+  - bridge module과 release-train BOM module을 같은 검증 경로로 가정했다.
+- 조치:
+  - workflow가 먼저 `:module:test` 존재 여부를 dry-run으로 확인하고, 없으면 `:module:check`로 fallback 하도록 수정했다.
+- 영향:
+  - `platform-runtime-bom:3.0.1`이 `platform-integrations`의 공식 publish surface로 정리됐다.
 
-- `README.md`
-- `docs/architecture.md`
-- `docs/configuration.md`
-- `docs/extension-guide.md`
-- `docs/modules.md`
-- `docs/private-publish.md`
-- `docs/quickstart.md`
-- `docs/release-notes.md`
-- `docs/troubleshooting.md`
-- `docs/why-use-platform-security.md`
+### 3. included-build 병렬 검증 시 build directory delete 충돌
 
-### 버전 변경
+- 증상:
+  - `Execution failed for task ':platform-governance:platform-governance-autoconfigure:compileJava'`
+  - `Unable to delete directory .../platform-governance-spring/build/classes/java/main`
+- 발생 맥락:
+  - `platform-integrations` smoke consumer를 composite build로 검증하는 동안, 같은 included build를 다른 Gradle 실행이 같이 건드렸다.
+- 원인:
+  - 동일한 included build tree를 병렬 Gradle invocation이 동시에 mutate했다.
+- 조치:
+  - 검증을 순차 실행으로 바꿔 재실행했고, 재현 없이 통과했다.
+- 판단:
+  - release artifact나 public surface 문제는 아니고 local verification orchestration 문제였다.
 
-- `release_version=2.1.0`
-- 문서 예시도 `platform-security-bom:2.1.0` 기준으로 갱신
+## 3.0.1 기준 실제 변경
 
-### 로컬 커밋 상태
+### 1. `platform-security`
 
-- commit: `34178b8`
-- message: `align platform-owned security contracts and release 2.1.0`
-- pushed branch: `main`
-- pushed tag: `v2.1.0`
-- publish workflow run id: `24762971913`
-- publish conclusion: `success`
+- stage-5 소비 기준으로 `starter + sanctioned add-on + public SPI` 구조를 닫았다.
+- `SecurityPolicy` additive 합성, ingress contributor SPI, `platform-security-web-api`, optional bridge starter, hybrid runtime surface를 공식 표면으로 정리했다.
+- base starter에서 `platform-security-client`를 분리해 inbound runtime과 outbound propagation을 구분했다.
+- `main` push와 `v3.0.1` publish가 완료됐다.
+- publish run:
+  - https://github.com/jho951/platform-security/actions/runs/24817534813
 
-### 이전 상태와의 연결
+### 2. `platform-resource`
 
-- 이번 `2.1.0`은 `2.0.5`까지 쌓인 platform-owned contract 정리 작업을 한 번 더 밀어붙인 결과다.
-- 따라서 release note에는 단순 문서 정리보다 public contract, rate-limit contract, hybrid gateway surface 변경을 모두 명시했다.
+- starter/autoconfigure compile classpath에서 `core` 구현이 서비스 compile surface로 새지 않도록 정리했다.
+- `platform-resource-sample-consumer` 기준으로 public API/SPI만으로 부팅과 저장 흐름이 성립하도록 맞췄다.
+- relay/customizer/module 문서도 실제 publish surface와 `3.0.1` 기준으로 정렬했다.
+- `main` push와 `v3.0.1` publish가 완료됐다.
+- publish run:
+  - https://github.com/jho951/platform-resource/actions/runs/24817536795
 
-## 2. `platform-resource`
+### 3. `platform-governance`
 
-### 문서 변경
+- starter compile surface에서 내부 adapter/core/engine 누수를 줄이고, 서비스 공식 SPI를 `AuditSink`, `PolicyConfigSource`, `GovernanceDecisionEngine`, `ViolationHandler` 기준으로 다시 고정했다.
+- mainline auto-config에서 `AuditLogRecorder` compat fan-out을 extension point처럼 다루지 않는 방향으로 정리했다.
+- sample consumer 기준으로 classpath closure를 다시 확인했고, `v3.0.1` publish가 완료됐다.
+- publish run:
+  - https://github.com/jho951/platform-governance/actions/runs/24817536135
 
-- `README.md`
-- `docs/usage.md`
-- `docs/private-publish.md`
-- `docs/configuration.md`
-- `docs/troubleshooting.md`
-- `docs/integration-ownership.md`
+### 4. `platform-integrations`
 
-### 반영한 내용
+- `platform-runtime-bom`을 supported release train SoT로 추가했다.
+- `platform-security-governance-bridge`와 `platform-resource-governance-bridge`를 `3.0.1` release train으로 다시 정렬했다.
+- module-scoped publish workflow가 BOM module도 처리할 수 있도록 수정했다.
+- publish run:
+  - `platform-runtime-bom`: https://github.com/jho951/platform-integrations/actions/runs/24817847857
+  - `platform-security-governance-bridge`: https://github.com/jho951/platform-integrations/actions/runs/24817848443
+  - `platform-resource-governance-bridge`: https://github.com/jho951/platform-integrations/actions/runs/24817849131
 
-- `platform-resource-jdbc-relay`를 공식 published/module surface에 반영
-- private publish 문서를 실제 workflow 기준인 `GITHUB_TOKEN` 흐름으로 정리
-- publish/version/tag 예시를 현재 `2.0.2` 기준으로 수정
-- `platform-resource-governance-bridge` 및 governance BOM 예시 버전을 현재 값으로 정리
-- production profile 기본값 설명을 실제 구현 기준인 `prod`, `production`으로 맞춤
+### 5. `oss-contract`
 
-### 로컬 커밋 상태
-
-- commit: `2ade63a`
-- message: `sync resource docs with published surface`
-
-### 이전 상태와의 연결
-
-- 이 문서 정리는 `v2.0.2` publish 성공 이후에도 남아 있던 module list / publish guide / governance bridge example drift를 닫는 후속 작업이다.
-
-## 3. `platform-governance`
-
-### 확인 결과
-
-- `README`, docs, `settings.gradle`, `gradle.properties`, workflow 기준을 전수 확인했다.
-- 현재 표준 대비 큰 불일치는 찾지 못했다.
-- 특히 아래 기준은 구현과 문서가 일치했다.
-  - production profile 기본값 `prod`, `production`
-  - `platform.governance.feature-flags.*` 우선, legacy `plugin-policy-engine.*`는 deprecated alias
-  - 서비스 공식 감사 출력 SPI는 `AuditSink`
-  - `AuditLogRecorder` fan-out은 compat 경로로만 허용
-
-### 코드/문서 변경
-
-- 없음
-
-### 이전 상태와의 연결
-
-- governance는 이번 턴에 수정은 없었지만, exact pin과 feature-flag prefix, `AuditSink` / `AuditLogRecorder` 경계가 이미 정리된 상태였기 때문에 기준 repo 역할을 했다.
-
-## 4. `platform-integrations`
-
-### 문서 변경
-
-- `README.md`
-
-### 반영한 내용
-
-- bridge artifact 설명은 이미 표준과 맞아 있었다.
-- 다만 실제 build 기준상 private dependency package를 읽기 위한 token 흐름이 필요해서 README에 dependency read token 설명을 추가했다.
-- publish 예시가 `githubDependencyPackagesToken` / `GITHUB_READ_TOKEN` fallback 구조를 이해할 수 있게 보강했다.
-
-### 로컬 커밋 상태
-
-- commit: `ffcbba2`
-- message: `document integration publish dependency tokens`
-
-### 이전 상태와의 연결
-
-- bridge artifact 자체는 이미 `1.0.3` publish 완료 상태였고, 이번 수정은 README가 실제 build/token fallback 구조를 충분히 설명하지 못하던 부분을 메운 것이다.
-
-## 5. `oss-contract`
-
-### 이미 반영한 계약 변경
-
-- `registry/layer2/standards/platform-security.md`
-- `registry/layer2/standards/platform-resource.md`
-- `registry/layer2/standards/platform-governance.md`
-- `registry/layer2/operations/publish.md`
-- `repositories/layer2/platform-security/README.md`
-- `repositories/layer2/platform-resource/README.md`
-- `repositories/layer2/platform-governance/README.md`
-- `repositories/layer2/platform-integrations/README.md`
-
-### 추가 인덱스 변경
-
-- `README.md`
-- `registry/layer2/README.md`
-- `repositories/layer2/README.md`
-
-### 로컬 커밋 상태
-
-- commit: `677936c`
-- message: `align layer2 platform contracts with implementation repos`
-- commit: `91f3012`
-- message: `refresh layer2 contract indexes`
+- `repositories/layer2/README.md`와 각 repo 상태 문서를 `3.0.1` release train 기준으로 맞췄다.
+- `registry/layer2/standards/platform-security.md`, `platform-governance.md`, `platform-resource.md`, `platform-integrations.md`를 stage-5 소비 경계 기준으로 정렬했다.
+- 이 문서 `troubleshooting.md`를 이번 수정 과정의 실제 오류, 해결 방법, publish 결과까지 포함하는 cross-repo SoT로 재정리했다.
 
 ## 검증
 
@@ -313,16 +249,7 @@
 성공:
 
 ```bash
-./gradlew :platform-security-auth:test :platform-security-autoconfigure:test :platform-security-hybrid-web-adapter:test
-./gradlew test
-```
-
-### `platform-resource`
-
-성공:
-
-```bash
-./gradlew test
+./gradlew verifyPublishedSurface verifyStarterContract :platform-security-sample-consumer:test
 ```
 
 ### `platform-governance`
@@ -330,7 +257,16 @@
 성공:
 
 ```bash
-./gradlew test
+./gradlew :platform-governance-autoconfigure:clean :platform-governance-autoconfigure:compileJava
+./gradlew :platform-governance-samples:test
+```
+
+### `platform-resource`
+
+성공:
+
+```bash
+./gradlew :platform-resource-sample-consumer:test
 ```
 
 ### `platform-integrations`
@@ -338,65 +274,42 @@
 성공:
 
 ```bash
-./gradlew test
+./gradlew verifyPublishedSurface verifyStarterContract :platform-stack-smoke-consumer:test -PuseLocalPlatform=true
 ```
-
-## 과거 검증 / 배포 기록에서 중요했던 항목
-
-- `platform-security`
-  - `./gradlew :platform-security-auth:test :platform-security-autoconfigure:test :platform-security-hybrid-web-adapter:test`
-  - 이후 `2.0.5` 소비 기준에서 bridge compile/test까지 통과
-- `platform-resource`
-  - `./gradlew clean test publishToMavenLocal -Prelease_version=2.0.2`
-  - `v2.0.1`은 workflow secret 문제로 실패, `v2.0.2`는 성공
-- `platform-integrations`
-  - bridge 두 개 모두 `1.0.3` 기준 test/publish 완료 기록 존재
 
 ## 지금 시점의 정합 상태
 
-- `platform-security`
-  - ports/core/adapter 경계 반영 완료
-  - `3.0.0` release 완료
-- `platform-resource`
-  - adapter/spi/runtime 경계 유지
-  - `3.0.0` release 완료
-- `platform-governance`
-  - adapter/autoconfigure/runtime 경계 유지
-  - `3.0.0` release 완료
-- `platform-integrations`
-  - bridge pin을 `security=3.0.0`, `governance=3.0.0`, `resource=3.0.0`으로 정렬
-  - 두 bridge 모두 `2.0.0` release 완료
-- `oss-contract`
-  - layer2 표준/상태 문서를 위 published 기준으로 다시 정렬
+- `platform-security`, `platform-resource`, `platform-governance`, `platform-integrations`의 current published baseline은 모두 `3.0.1`이다.
+- supported 조합 version은 `platform-runtime-bom:3.0.1`을 source-of-truth로 본다.
+- `oss-contract`의 layer2 표준과 repository 상태 문서는 위 baseline 기준으로 다시 정렬됐다.
+- 서비스 repo의 version pin과 platform 소비 방향도 `3.0.1` release train 기준으로 정리된 상태다.
+- 다만 published artifact만 사용한 서비스 재검증, Docker image build, container 기동 smoke, 서비스 간 end-to-end 호출 검증은 이 문서 범위 밖의 별도 검증 과제로 남는다.
 
 ## push / publish 관점 현재 상태
 
 - `platform-security`
   - `main` push 완료
-  - `v3.0.0` tag push 완료
-  - publish workflow 성공 완료
+  - `v3.0.1` tag push 완료
+  - publish workflow 성공
 - `platform-resource`
   - `main` push 완료
-  - `v3.0.0` tag push 완료
-  - publish workflow 성공 완료
+  - `v3.0.1` tag push 완료
+  - publish workflow 성공
 - `platform-governance`
   - `main` push 완료
-  - `v3.0.0` tag push 완료
-  - publish workflow 성공 완료
+  - `v3.0.1` tag push 완료
+  - publish workflow 성공
 - `platform-integrations`
   - `main` push 완료
-  - `platform-security-governance-bridge/v2.0.0` tag push 완료
-  - `platform-resource-governance-bridge/v2.0.0` tag push 완료
-  - bridge publish workflow 성공 완료
+  - `platform-runtime-bom/v3.0.1` tag push 완료
+  - `platform-security-governance-bridge/v3.0.1` tag push 완료
+  - `platform-resource-governance-bridge/v3.0.1` tag push 완료
+  - 각 module publish workflow 성공
 - `oss-contract`
-  - layer2 상태 문서와 표준 문서를 현재 배포본 기준으로 정렬 완료
-
-## 아직 남은 작업
-
-- `oss-contract` 최신 문서 정합화 커밋 및 `main` push
+  - layer2 표준, repo 상태, troubleshooting 기록을 현재 publish baseline 기준으로 정렬 완료
 
 ## 주의
 
 - 이 문서는 로컬 작업과 원격 반영 결과를 함께 적는다.
-- untracked 초안이나 과거 작업 기록은 최종 push 범위에 자동 포함하지 않는다.
-- 과거 기록 중 일부 commit/tag/run id는 이전 작업 메모를 복원한 것이며, 이 문서는 그 맥락을 현재 정합 상태와 함께 보존하기 위한 용도다.
+- 이 문서 위쪽의 `2.x`, `1.x` 버전 이력은 historical migration record이며 현재 baseline이 아니다.
+- 일부 실패는 public surface 결함이 아니라 workflow/local build artifact 문제였고, 각 항목에 그렇게 구분해 적었다.

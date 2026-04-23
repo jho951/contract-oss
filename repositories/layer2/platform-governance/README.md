@@ -103,3 +103,4 @@
 - 따라서 서비스는 custom `AuditLogRecorder`가 아니라 계속 `AuditSink`를 등록한다.
 - `platform-governance-starter`만으로는 `AuditSink` 타입이 compile surface에 자동 노출되지 않으므로, SPI를 직접 구현하는 서비스는 `audit-log-api`를 별도 의존성으로 가진다.
 - 구현 레포 `main` push와 `v3.0.1` publish까지 완료됐다.
+- cross-repo release/publish 오류와 복구 이력은 [../../../troubleshooting.md](../../../troubleshooting.md)를 canonical record로 본다.

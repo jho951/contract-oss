@@ -78,3 +78,4 @@
 - 구현 레포 `main` 문서는 `platform-security 3.0.1`, `platform-governance 3.0.1`, `platform-resource 3.0.1` 기준 pin 설명으로 갱신됐다.
 - 서비스의 공식 governance 출력 SPI는 `AuditSink`다.
 - bridge는 서비스 확장 포인트로 `AuditLogRecorder`를 노출하지 않고 governance 내부 `AuditLogRecorder` bean을 통해 기록한다.
+- cross-repo release/publish 오류와 복구 이력은 [../../../troubleshooting.md](../../../troubleshooting.md)를 canonical record로 본다.

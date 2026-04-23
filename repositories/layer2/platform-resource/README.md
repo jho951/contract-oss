@@ -96,4 +96,5 @@
 - README, usage, private-publish 예시는 `3.0.1` 기준으로 정리됐다.
 - 구현 레포 `main` push와 `v3.0.1` publish까지 완료됐다.
 - `platform-resource-governance-bridge:3.0.1`는 `platform-resource 3.0.1`, `platform-governance 3.0.1`, `platform-integrations 3.0.1` release train 기준으로 publish 완료 상태다.
+- cross-repo release/publish 오류와 복구 이력은 [../../../troubleshooting.md](../../../troubleshooting.md)를 canonical record로 본다.
 - `v2.0.1` publish 실패와 `v2.0.2` 재배포 경위는 과거 이력으로 [troubleshooting.md](../../../troubleshooting.md)에 남긴다.

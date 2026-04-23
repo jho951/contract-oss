@@ -13,7 +13,7 @@
 
 - `platform-integrations`는 2계층 optional integration platform이다.
 - formal docs에서는 repository 역할을 `optional integration platform`으로 부른다.
-- individual published module은 `bridge module` 또는 `bridge artifact`로 부른다.
+- individual published module은 `release-train module` 또는 `bridge artifact`로 부른다.
 - bridge는 source platform의 공개 event/publisher 계약과 target platform의 공개 SPI 및 target-owned internal adapter seam만 사용한다.
 - bridge는 소비자 비즈니스 로직, 도메인 권한 판단, 소비자별 policy key를 포함하지 않는다.
 - bridge는 본체 platform의 release 단위와 독립적으로 release할 수 있다.
@@ -24,6 +24,7 @@
 
 ## 현재 모듈 기준
 
+- `platform-runtime-bom`
 - `platform-security-governance-bridge`
 - `platform-resource-governance-bridge`
 

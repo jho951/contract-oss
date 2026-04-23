@@ -12,4 +12,5 @@
 - `platform-security`, `platform-governance`, `platform-resource`는 서비스가 직접 소비하는 실행 platform이다.
 - `platform-integrations`는 두 platform을 모두 쓰는 소비자가 연결 요구가 있을 때만 추가하는 bridge layer다.
 - supported 조합 version은 `platform-runtime-bom:3.0.1` release train을 source-of-truth로 본다.
+- cross-repo release/publish 오류와 복구 이력은 [../../troubleshooting.md](../../troubleshooting.md)를 canonical record로 본다.
 - `platform-resource`는 단순 file-storage wrapper가 아니라 resource lifecycle runtime이다.

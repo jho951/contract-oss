@@ -122,3 +122,4 @@
 - production profile 기본값은 `prod`, `production`으로 통일됐다.
 - 구현 레포 `main` push와 `v3.0.1` publish workflow 성공까지 완료됐다.
 - `platform-security-governance-bridge:3.0.1`는 `platform-security 3.0.1`, `platform-governance 3.0.1`, `platform-integrations 3.0.1` release train 기준으로 publish 완료 상태다.
+- cross-repo release/publish 오류와 복구 이력은 [../../../troubleshooting.md](../../../troubleshooting.md)를 canonical record로 본다.
