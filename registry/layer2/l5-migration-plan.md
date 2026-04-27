@@ -2,6 +2,8 @@
 
 이 문서는 [l5-target-architecture.md](l5-target-architecture.md)에 적은 목표 구조로 실제로 옮겨가는 순서를 정리한다.
 
+서비스별 실제 정리 기준은 [l5-service-migration-checklist.md](l5-service-migration-checklist.md)에서 따로 관리한다.
+
 ## 핵심 원칙
 
 - 서비스에서 OSS 직접 참조를 금지한다.
