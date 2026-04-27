@@ -1,16 +1,17 @@
 # 2계층 Platform
 
-| 레포 | Version | 성격 | 표준 | 흡수 대상 | GitHub | 상태 |
-| --- | --- | --- | --- | --- | --- | --- |
-| `platform-security` | `3.0.1` | runtime platform | [표준](../../registry/layer2/standards/platform-security.md) | `auth`, `ip-guard`, `rate-limiter` | https://github.com/jho951/platform-security | [상태](platform-security/README.md) |
-| `platform-governance` | `3.0.1` | runtime platform | [표준](../../registry/layer2/standards/platform-governance.md) | `audit-log`, `policy-config`, `plugin-policy-engine-config` 호환 | https://github.com/jho951/platform-governance | [상태](platform-governance/README.md) |
-| `platform-resource` | `3.0.1` | runtime platform | [표준](../../registry/layer2/standards/platform-resource.md) | `file-storage`, `notification` | https://github.com/jho951/platform-resource | [상태](platform-resource/README.md) |
-| `platform-integrations` | `3.0.1` | optional bridge layer | [표준](../../registry/layer2/standards/platform-integrations.md) | platform 간 optional bridge | https://github.com/jho951/platform-integrations | [상태](platform-integrations/README.md) |
+이 문서는 main 브랜치 기준 L5 목표 구조에서 4개 플랫폼이 어떤 역할로 정리되는지 보여준다.
+
+| 레포 | 목표 역할 | 표준 | 주로 감싸는 OSS | 상태 |
+| --- | --- | --- | --- | --- |
+| `platform-security` | 인증과 인가 실행 플랫폼 | [표준](../../registry/layer2/standards/platform-security.md) | `auth`, `ip-guard`, `rate-limiter` | [설명](platform-security/README.md) |
+| `platform-governance` | 감사와 정책과 운영 통제 플랫폼 | [표준](../../registry/layer2/standards/platform-governance.md) | `audit-log`, `policy-config`, `plugin-policy-engine` | [설명](platform-governance/README.md) |
+| `platform-resource` | 파일과 리소스 lifecycle 플랫폼 | [표준](../../registry/layer2/standards/platform-resource.md) | `file-storage`, `notification` | [설명](platform-resource/README.md) |
+| `platform-integrations` | 알림과 외부 연동 outbound 플랫폼 | [표준](../../registry/layer2/standards/platform-integrations.md) | `notification` | [설명](platform-integrations/README.md) |
 
 ## 소비 기준
 
-- `platform-security`, `platform-governance`, `platform-resource`는 서비스가 직접 소비하는 실행 platform이다.
-- `platform-integrations`는 두 platform을 모두 쓰는 소비자가 연결 요구가 있을 때만 추가하는 bridge layer다.
-- supported 조합 version은 `platform-runtime-bom:3.0.1` release train을 source-of-truth로 본다.
-- cross-repo release/publish 오류와 복구 이력은 [../../troubleshooting.md](../../troubleshooting.md)를 canonical record로 본다.
-- `platform-resource`는 단순 file-storage wrapper가 아니라 resource lifecycle runtime이다.
+- 서비스는 OSS를 직접 보지 않고 platform만 소비한다.
+- `platform-security`, `platform-governance`, `platform-resource`, `platform-integrations`는 모두 서비스 코드에서 공통 실행 흐름을 걷어내기 위한 계층이다.
+- 현재 구현 이력과 과거 version 정리는 [../../troubleshooting.md](../../troubleshooting.md)에 남긴다.
+- 목표 구조와 전환 순서는 `registry/layer2` 기준 문서를 source-of-truth로 본다.

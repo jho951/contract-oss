@@ -1,75 +1,54 @@
 # platform-integrations Standard
 
-이 문서는 `platform-integrations` 2계층 platform의 표준 구조와 경계를 고정한다.
+이 문서는 `platform-integrations`가 L5 목표 구조에서 어떤 책임을 가져야 하는지 고정한다.
+
+## 역할
+
+- 알림과 외부 연동과 outbound delivery 플랫폼
+- 서비스 바깥으로 나가는 전달 흐름을 표준화하는 계층
 
 ## 목적
 
-- `platform-security`, `platform-resource`, `platform-governance`처럼 이미 독립적인 platform 사이의 선택 연결을 관리한다.
-- 본체 platform이 서로를 필수 의존성으로 끌어안지 않도록 bridge를 별도 artifact로 분리한다.
-- 소비자가 필요한 연결만 명시적으로 추가할 수 있게 한다.
-- 외부 SaaS/API 연동 platform이 아니라 platform-to-platform bridge layer의 경계를 고정한다.
+- 서비스마다 메일, 문자, 푸시, webhook, 외부 연동 코드를 따로 만들지 않게 한다.
+- notification 모델, retry, idempotency, outbound error 표준을 한 곳에 모은다.
+- 서비스는 무엇을 보낼지 결정하고, 어떻게 보낼지는 platform이 소유하게 한다.
 
-## 계층 원칙
+## 소유해야 할 것
 
-- `platform-integrations`는 2계층 optional integration platform이다.
-- formal docs에서는 repository 역할을 `optional integration platform`으로 부른다.
-- individual published module은 `release-train module` 또는 `bridge artifact`로 부른다.
-- bridge는 source platform의 공개 event/publisher 계약과 target platform의 공개 SPI 및 target-owned internal adapter seam만 사용한다.
-- bridge는 소비자 비즈니스 로직, 도메인 권한 판단, 소비자별 policy key를 포함하지 않는다.
-- bridge는 본체 platform의 release 단위와 독립적으로 release할 수 있다.
-- bridge는 두 platform을 모두 쓰는 소비자가 `implementation`으로 명시할 때만 활성화된다.
-- bridge는 source/target platform을 대신 enable하지 않는다.
-- bridge는 각 platform의 내부 bean graph나 1계층 raw 타입을 직접 기준으로 삼지 않는다.
-- 두 core runtime 사이의 optional migration/compatibility seam이 서비스에 남아 있다면, 그것은 service-owned가 아니라 bridge artifact나 platform-owned compat surface로 옮겨야 한다.
+- notification 표준 모델
+- email, SMS, push, webhook provider 추상화
+- 알림 템플릿 처리
+- 발송 실패 재시도 정책
+- 외부 연동 예외 표준화
+- integration event 발행
+- idempotency key 처리
 
-## 현재 모듈 기준
+## 1계층 조립 기준
 
-- `platform-runtime-bom`
-- `platform-security-governance-bridge`
-- `platform-resource-governance-bridge`
+- `notification`
 
-## bridge 책임
+## 포함해야 할 것
 
-| Bridge | Source | Target | 책임 |
-| --- | --- | --- | --- |
-| `platform-security-governance-bridge` | `platform-security` | `platform-governance` | security audit event를 governance audit entry로 기록 |
-| `platform-resource-governance-bridge` | `platform-resource` | `platform-governance` | resource store/delete lifecycle event를 governance audit entry로 기록 |
-
-## 소비 기준
-
-소비자는 아래 조건을 모두 만족할 때만 bridge를 추가한다.
-
-- source platform을 이미 사용한다.
-- target platform을 이미 사용한다.
-- event를 target platform audit으로 남겨야 하는 운영 요구가 있다.
-- 기본 bridge mapping으로 충분하거나, 별도 publisher/recorder override point가 있다.
+- outbound sender API와 SPI
+- provider abstraction
+- retry와 idempotency
+- 공통 delivery result 모델
+- typed properties
 
 ## 포함하지 말아야 할 것
 
-- `platform-security` 내부 filter나 policy 구현 직접 참조
-- `platform-resource` 내부 workflow 구현 직접 참조
-- `platform-governance` 내부 audit 구현 직접 참조
-- 소비자별 audit taxonomy 하드코딩
-- 소비자별 권한 판단
-- bridge가 본체 platform을 대신 enable하는 자동 조립
-- 외부 vendor 연동 client/platform
+- 서비스별 알림 문구 하드코딩
+- 서비스별 발송 타이밍 판단
+- 서비스별 비즈니스 이벤트 의미 정의
+- 서비스별 외부 시스템 client 직접 구현
 
-## 정합성 기준
+## 경계 규칙
 
-- `platform-security-governance-bridge`는 `SecurityAuditPublisher`와 `platform-governance-adapter-auditlog`가 만든 내부 `AuditLogRecorder` bean으로만 연결한다.
-- `platform-resource-governance-bridge`는 `ResourceLifecyclePublisher`와 `platform-governance-adapter-auditlog`가 만든 내부 `AuditLogRecorder` bean으로만 연결한다.
-- `platform-resource-governance-bridge` source, tests, build script, publish configuration, artifact version, release tag는 `platform-integrations`가 소유한다.
-- `platform-resource`는 `ResourceLifecycleEvent`, `ResourceLifecyclePublisher`, lifecycle publisher composition, lifecycle mode fail-fast rule만 소유한다.
-- bridge가 필요하더라도 source platform 본체가 target platform 구현체를 직접 의존하도록 만들면 안 된다.
-- 지원 조합 version은 `platform-runtime-bom`이 source-of-truth로 고정한다.
-- bridge release version은 `platform-integrations`의 `release_version`과 같은 release train으로 관리한다.
-- publish는 bridge module 단위로 수행할 수 있다.
-- stage-5 기준에서는 core runtime과 서비스가 duplicate bridge/compat adapter를 들고 있지 않고, cross-platform seam은 이 저장소 artifact로 수렴해야 한다.
+- `platform-integrations`는 outbound 실행 표준의 owner다.
+- 도메인 의미와 발송 타이밍은 서비스가 owner다.
+- `platform-integrations`가 다른 플랫폼의 내부 구현을 직접 알면 안 된다.
+- 필요하면 `platform-governance`의 audit, policy 기준을 소비할 수 있지만 순환 의존을 만들면 안 된다.
 
-## 실무 판단 기준
+## 운영 기준
 
-- "이 기능이 없어도 source platform이 정상 동작해야 한다"면 bridge가 맞다.
-- "두 platform을 모두 쓰는 소비자에게만 필요한 연결"이면 bridge가 맞다.
-- "source platform의 핵심 실행 흐름 자체"라면 bridge가 아니라 source platform 본체 책임이다.
-- "소비자 도메인에 따라 의미가 달라지는 audit 분류"라면 bridge가 아니라 소비자 override 책임이다.
-- "외부 시스템 연동을 위한 client/adapter"라면 `platform-integrations` 책임이 아니다.
+- 실패 재시도, dead-letter, idempotency, provider fallback 같은 운영 기준은 `platform-integrations`에서 표준화한다.

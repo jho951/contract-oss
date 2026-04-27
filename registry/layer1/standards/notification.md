@@ -6,7 +6,7 @@
 
 - 알림 메시지 모델과 전달 인터페이스를 제공한다.
 - 전달 채널 조합과 framework-independent primitive를 순수 기능으로 유지한다.
-- 2계층 `platform-resource`나 다른 platform이 lifecycle 부수효과에 notification primitive를 조립할 수 있게 한다.
+- 2계층 `platform-integrations`나 `platform-resource`가 outbound 전달 또는 lifecycle 부수효과에 notification primitive를 조립할 수 있게 한다.
 
 ## 계층 원칙
 

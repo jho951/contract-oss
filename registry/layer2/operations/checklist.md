@@ -42,6 +42,8 @@
 ## 책임 점검
 
 - [ ] 공통 책임 경계는 [README.md](../README.md)를 따른다.
+- [ ] 목표 구조는 [l5-target-architecture.md](../l5-target-architecture.md)를 따른다.
+- [ ] 전환 순서는 [l5-migration-plan.md](../l5-migration-plan.md)를 따른다.
 - [ ] platform별 책임 경계는 해당 platform 표준 문서를 따른다.
 
 ## 레포별 특화 점검

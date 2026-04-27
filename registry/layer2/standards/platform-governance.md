@@ -1,79 +1,59 @@
 # platform-governance Standard
 
-이 문서는 `platform-governance` 2계층 platform의 표준 구조와 경계를 고정한다.
+이 문서는 `platform-governance`가 L5 목표 구조에서 어떤 책임을 가져야 하는지 고정한다.
+
+## 역할
+
+- 감사와 정책과 운영 통제 플랫폼
+- audit, policy config, policy engine, violation handling의 표준 계층
 
 ## 목적
 
-- `audit-log`, `policy-config` 1계층 OSS와 `plugin-policy-engine-config` 호환 기준을 조립하는 표준 2계층을 정의한다.
-- 운영 정책, 감사 기록, 정책 평가와 위반 대응의 공통 runtime을 제공한다.
-- security/resource 같은 다른 platform이 직접 governance 구현을 알지 않아도 되는 공개 SPI와 platform-owned audit adapter 경계를 제공한다.
+- 서비스마다 audit 포맷과 policy 호출 방식을 따로 만들지 않게 한다.
+- 운영 기준, 감사 기준, 정책 기준을 한 곳에서 고정한다.
+- `platform-security`, `platform-resource`, `platform-integrations`가 같은 정책과 감사 기준을 보게 한다.
 
-## 계층 원칙
+## 소유해야 할 것
 
-- `platform-governance`는 서비스가 직접 소비하는 runtime platform이다.
-- governance는 보안의 하위 계층이 아니라 security와 나란히 붙는 운영 통제 platform이다.
-- `policy-config`, audit pipeline, platform `GovernancePolicyPlugin` chain의 owner는 `platform-governance`다.
-- `plugin-policy-engine` 전체 runtime은 흡수하지 않고 feature flag/config 호환 기준과 BOM 정렬 대상으로만 둔다.
-- governance 판단은 운영 정책과 감사/위반 처리의 표준화에 한정한다.
-- 업무 승인, 게시글 권한, workspace membership 같은 도메인 사실 판단은 소비자 서비스 책임이다.
-- security/resource event를 governance audit으로 연결하는 bridge는 `platform-integrations`에서 제공한다.
-- production profile 기본값은 다른 runtime platform과 동일해야 한다.
-
-## platform 소유 경계 기준
-
-- `platform-governance-api`, `platform-governance-core`, `platform-governance-engine`은 1계층 audit/config 타입을 직접 public contract로 노출하지 않는다.
-- 서비스 확장은 `AuditSink`, `PolicyConfigSource`, `GovernanceDecisionEngine`, `ViolationHandler` 같은 공식 SPI로 닫는다.
-- 서비스가 `AuditLogRecorder` 같은 내부 adapter bean을 직접 override해야만 동작하는 구조는 허용하지 않는다.
-- audit-log, policy-config, plugin-policy-engine-config를 아는 코드는 adapter/autoconfigure 계층으로 한정한다.
-- stage-5 기준에서는 서비스가 service-owned audit/config compatibility adapter를 직접 유지하지 않고, migration seam이 필요하면 governance 또는 integrations가 공식 compat surface로 소유해야 한다.
-
-## Owner Rule
-
-- `platform-governance`는 policy read, evaluation, audit contract, extension point를 소유한다.
-- publish, revoke, history, approval workflow 같은 운영 애플리케이션 workflow의 최종 owner는 3계층 서비스나 별도 governance application이다.
-- 즉 `platform-governance`는 governance runtime이지, governance 운영 애플리케이션 그 자체가 아니다.
+- audit event 표준 모델
+- audit sink 표준화
+- policy config loading
+- plugin policy engine 실행
+- 운영 정책 평가 결과 표준화
+- violation handler
+- 운영 기본값과 fail-fast 기준
 
 ## 1계층 조립 기준
 
-- `audit-log`: 구조화 audit event, sink, masking, recorder primitive
-- `policy-config`: 운영 정책 설정 source, resolution, operational status
-- `plugin-policy-engine-config`: feature flag/config 호환 기준과 BOM 정렬 대상
+- `audit-log`
+- `policy-config`
+- `plugin-policy-engine`
 
 ## 포함해야 할 것
 
-- 구조화 감사 API와 taxonomy
-- identity audit recorder 같은 역할별 audit convenience API
-- 정책 설정 조회와 feature flag config 호환 기준
-- platform `GovernancePolicyPlugin` chain 조립
-- 정책 변경 기록
-- 위반 대응 handler 실행
-- service role preset 기반 운영 기본값
-- `AuditSink`, `PolicyConfigSource`, `ViolationHandler` 같은 공식 SPI
-- 운영 fail-fast 정책
+- platform-owned audit contract
+- platform-owned policy contract
+- 정책 조회와 평가 엔진
+- audit convenience API
+- typed properties
+- 운영 fail-fast
 
 ## 포함하지 말아야 할 것
 
-- security filter, authentication, gateway header 인증 조립
-- resource 저장, 삭제, catalog 구현
-- 소비자별 audit taxonomy 하드코딩
-- 소비자별 policy key 하드코딩
-- 도메인 권한 판단
-- 특정 서비스 DB 상태 확인
-- security/resource event bridge 구현
+- 인증 필터 체인
+- JWT 발급과 세션 집행
+- 파일 저장과 삭제 구현
+- 메일 발송과 webhook 호출
+- 서비스별 도메인 승인 로직
 
 ## 확장 규칙
 
-- 감사 출력 대상은 `AuditSink`를 공식 SPI로 본다.
-- `AuditLogRecorder`는 `platform-governance-adapter-auditlog` 내부 seam이며 governance event를 audit pipeline으로 넘기는 adapter 계약으로만 본다.
-- 정책 평가는 platform `GovernancePolicyPlugin` 또는 `GovernanceDecisionEngine`으로 확장한다.
-- audit 기록과 violation handling 골격은 platform이 소유한다.
-- feature flag config 설정 prefix는 `platform.governance.feature-flags.*`를 사용한다.
-- 기존 `platform.governance.plugin-policy-engine.*`는 deprecated alias로만 유지한다.
-- 공식 SPI가 존재하는데도 서비스가 `AuditLogRecorder` fan-out, 내부 config wiring, compat adapter를 extension point처럼 직접 소유하면 stage-5 완료로 보지 않는다.
+- `platform-governance`는 정책과 감사 기준의 owner다.
+- 요청을 실제로 차단하거나 인증 흐름에서 집행하는 owner는 `platform-security`다.
+- domain fact 판단은 소비자 서비스 책임이다.
+- `plugin-policy-engine` 전체 runtime을 다시 platform 바깥으로 흘려보내지 않는다.
 
 ## 운영 기준
 
-- 운영에서는 audit sink/context/service identity, `PolicyConfigSource.operationalStatus()`, fatal handler 정책을 fail-fast 대상으로 본다.
-- `platform-governance-core`는 Spring/audit/violation wrapper 없는 pure Java reference engine으로 유지한다.
-- bridge가 필요한 소비자는 `platform-integrations`의 bridge artifact를 명시적으로 추가한다.
 - production profile 기본값은 `["prod", "production"]`를 사용한다.
+- audit sink, service identity, policy operational status는 fail-fast 대상이다.
