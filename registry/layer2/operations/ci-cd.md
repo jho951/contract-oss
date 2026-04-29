@@ -1,7 +1,5 @@
 # 2계층 CI/CD 기준
 
-2계층 platform은 private package 또는 내부 배포 흐름을 전제로 하되, build와 publish 책임을 분리한다.
-
 ## 기본 원칙
 
 - branch / pull request 검증은 build workflow에서 수행한다.

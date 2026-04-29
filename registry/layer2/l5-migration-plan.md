@@ -80,3 +80,22 @@
 - starter boot smoke test
 - sample consumer test
 - cross-platform smoke test
+
+## 현재 2계층 완료 이후 3계층 적용 순서
+
+2계층 platform은 이미 starter, public SPI, sample consumer, Stage5 contract gate 기준으로 정리됐다고 보고, 3계층 서비스는 아래 순서로 옮긴다.
+
+1. `service-gateway`
+2. `service-auth`
+3. `service-editor`
+4. `service-user`
+5. `service-authz`
+6. `service-redis`
+
+이 순서를 권장하는 이유는 간단하다.
+
+- `service-gateway`는 `platform-security` 집행 표준을 가장 먼저 드러내는 ingress다.
+- `service-auth`는 로그인, JWT, 보안 알림처럼 platform 효과가 큰 영역이다.
+- `service-editor`, `service-user`는 `platform-resource`와 `platform-integrations` 중복 구현을 많이 걷어낼 수 있다.
+- `service-authz`는 마지막에 domain fact만 남기고 execution flow를 정리하는 편이 경계가 덜 흔들린다.
+- `service-redis`는 플랫폼 뒤에 숨기거나 삭제할 수 있는지 최종 판단 단계에서 정리하는 편이 안전하다.

@@ -1,7 +1,5 @@
 # 1계층 Maven Central 구조 표준
 
-1계층 OSS는 Maven Central에 공개 배포 가능한 독립 라이브러리다.
-
 ## 목적
 
 - `gradle.properties`, `build.gradle`, `settings.gradle`, `publish.yml`의 책임을 분리한다.
@@ -49,12 +47,6 @@
 - test 후 nmcp aggregation publish task를 실행한다.
 - Maven Central credential과 signing secret을 사용한다.
 
-## 필요한 secret
-
-- `MAVEN_CENTRAL_USERNAME`
-- `MAVEN_CENTRAL_PASSWORD`
-- `SIGNING_KEY`
-- `SIGNING_PASSWORD`
 
 ## 검증 항목
 

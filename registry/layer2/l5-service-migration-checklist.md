@@ -5,6 +5,19 @@
 목적은 간단하다.
 각 서비스가 무엇을 계속 소유하고, 무엇을 플랫폼으로 올리고, 무엇을 지워야 하는지를 바로 판단하게 하는 것이다.
 
+## 지금 기준으로 서비스가 먼저 붙어야 하는 2계층 surface
+
+- 보안 실행은 `platform-security-starter`를 기본 진입점으로 본다.
+- auth OSS 연결은 `platform-security-auth-bridge-starter`를 먼저 본다.
+- rate-limit 집행 연결은 `platform-security-ratelimit-bridge-starter`를 먼저 본다.
+- web/security 조합 진입점은 `platform-security-hybrid-web-adapter`를 먼저 본다.
+- 서비스 간 보안 전파가 필요하면 `platform-security-client`를 쓴다.
+- governance 확장과 정책 위반 처리 연결은 `GovernanceAuditSink`, `GovernanceAuditRecorder`, `PolicyConfigSource`, `GovernanceDecisionEngine`, `ViolationHandler`를 공식 surface로 본다.
+- resource 기본 진입점은 `platform-resource-starter`다.
+- raw storage bean 흡수는 `platform-resource-filestorage-bridge-starter`를 먼저 본다.
+- raw notification bean 흡수는 `platform-resource-notification-bridge-starter`를 먼저 본다.
+- outbound 알림과 외부 전달은 `platform-integrations-starter`와 `PlatformOutboundSender`를 기본 진입점으로 본다.
+
 ## 공통 체크
 
 모든 서비스는 아래 질문에 `예`라고 답할 수 있어야 한다.
@@ -15,7 +28,25 @@
 - 서비스 코드는 도메인 모델, 도메인 규칙, 플랫폼 연결 코드 위주로 남아 있는가
 - 서비스별 helper, util, formatter, sender, filter가 플랫폼으로 올라갔는가
 
+## 공통으로 먼저 끊을 것
+
+- `oss-auth`, `oss-audit-log`, `oss-file-storage`, `oss-notification` 직접 import
+- `oss-rate-limiter`, `oss-ip-guard`, `oss-policy-config`, `oss-plugin-policy-engine` 직접 import
+- service-owned JWT helper
+- service-owned audit formatter
+- service-owned file upload helper
+- service-owned notification sender
+- service-owned filter, interceptor, policy caller, retry worker
+
 ## `service-gateway`
+
+### 우선 붙일 platform surface
+
+- `platform-security-starter`
+- `platform-security-auth-bridge-starter`
+- `platform-security-ratelimit-bridge-starter`
+- `platform-security-hybrid-web-adapter`
+- `platform-governance`의 audit/policy public SPI
 
 ### 서비스가 계속 소유할 것
 
@@ -44,8 +75,17 @@
 
 - gateway는 `platform-security`와 `platform-governance` 설정만 붙인다.
 - gateway는 raw OSS 보안 타입을 직접 import하지 않는다.
+- gateway는 자체 JWT/IP/rate-limit helper 없이도 동작해야 한다.
 
 ## `service-auth`
+
+### 우선 붙일 platform surface
+
+- `platform-security-starter`
+- `platform-security-auth-bridge-starter`
+- 다른 서비스 호출이 있으면 `platform-security-client`
+- `platform-integrations-starter`
+- 필요하면 `platform-governance`의 audit/policy public SPI
 
 ### 서비스가 계속 소유할 것
 
@@ -77,8 +117,17 @@
 
 - `service-auth`는 `AuthUserProvider`, token store, user 상태 조회 구현만 남긴다.
 - 메일, SMS, 보안 알림 발송은 `platform-integrations`를 통해서만 나간다.
+- 인증 성공/실패 흐름은 서비스 helper가 아니라 `platform-security` 실행 흐름을 통해 처리한다.
 
 ## `service-user`
+
+### 우선 붙일 platform surface
+
+- `platform-resource-starter`
+- `platform-resource-filestorage-bridge-starter`
+- `platform-resource-notification-bridge-starter`
+- `platform-integrations-starter`
+- `platform-governance`의 audit public SPI
 
 ### 서비스가 계속 소유할 것
 
@@ -105,8 +154,15 @@
 
 - `service-user`는 profile image의 도메인 의미만 가진다.
 - 파일 저장과 presigned URL 발급은 `platform-resource`를 통해서만 처리한다.
+- 가입/프로필 변경 알림은 `PlatformOutboundSender`를 통해서만 나간다.
 
 ## `service-authz`
+
+### 우선 붙일 platform surface
+
+- `platform-governance`의 `PolicyConfigSource`, `GovernanceDecisionEngine`, `ViolationHandler`
+- 요청 차단 진입점이 필요하면 `platform-security`
+- 감사 연결은 `GovernanceAuditRecorder`
 
 ### 서비스가 계속 소유할 것
 
@@ -131,8 +187,17 @@
 
 - `service-authz`는 누가 무엇을 할 수 있는지에 대한 도메인 사실만 소유한다.
 - 실제 요청 차단과 정책 집행 흐름은 `platform-security`와 `platform-governance`를 통해 처리한다.
+- service-owned policy engine caller와 access denied formatter가 남아 있으면 완료로 보지 않는다.
 
 ## `service-editor`
+
+### 우선 붙일 platform surface
+
+- `platform-resource-starter`
+- `platform-resource-filestorage-bridge-starter`
+- `platform-resource-notification-bridge-starter`
+- `platform-integrations-starter`
+- `platform-governance`의 audit/policy public SPI
 
 ### 서비스가 계속 소유할 것
 
@@ -160,8 +225,16 @@
 
 - `service-editor`는 `resourceId`와 document/block 도메인 연결만 가진다.
 - 첨부파일 저장과 외부 알림 발송은 각각 `platform-resource`, `platform-integrations`로 분리된다.
+- storage SDK, audit formatter, collaboration sender가 서비스에 남아 있으면 완료로 보지 않는다.
 
 ## `service-redis`
+
+### 우선 붙일 platform surface
+
+- 보안 저장은 `platform-security` 뒤로 숨긴다.
+- rate-limit 저장은 `platform-security` 뒤로 숨긴다.
+- idempotency와 outbound 저장은 `platform-integrations` 뒤로 숨긴다.
+- resource 보조 저장이 있으면 `platform-resource` 뒤로 숨긴다.
 
 ### 서비스가 계속 소유할 것
 
@@ -186,6 +259,7 @@
 
 - `service-redis`가 남는다면 도메인 캐시나 운영 저장소처럼 이유가 분명해야 한다.
 - 보안, 알림, 리소스 플랫폼이 필요한 Redis 사용은 각 플랫폼 contract 뒤로 숨긴다.
+- 플랫폼 범용 helper 저장소 역할만 한다면 삭제 후보로 본다.
 
 ## 서비스별 최종 모습
 
@@ -197,6 +271,15 @@
 - `service-authz`: 도메인 권한 의미
 - `service-editor`: document/block 도메인, resource 연결
 - `service-redis`: 남겨야 할 도메인 저장소가 있을 때만 제한적으로 유지
+
+## 권장 적용 순서
+
+- `service-gateway`: ingress 보안 집행이 가장 먼저 통일돼야 한다.
+- `service-auth`: 로그인, 토큰, 보안 알림 흐름을 바로 platform으로 넘긴다.
+- `service-editor`: resource lifecycle과 outbound 알림 중복이 크므로 빨리 걷어낸다.
+- `service-user`: profile image와 가입/변경 알림을 resource/integrations로 정리한다.
+- `service-authz`: 도메인 권한 의미만 남기고 정책 실행 흐름을 거둬낸다.
+- `service-redis`: 마지막에 플랫폼 뒤로 숨기거나 삭제한다.
 
 ## 마지막 점검
 

@@ -51,6 +51,8 @@ docs/
 - 1계층 OSS는 2계층 platform이 조립할 published artifact를 제공한다.
 - 1계층 OSS는 직접 가져다 쓰지 않습니다.
 - 1계층 OSS는 Spring Boot starter, 서비스 정책, 도메인 권한 판단, platform 조립 책임을 갖지 않습니다.
+- `standards/*.md`는 같은 섹션 순서를 사용한다.
+- 기본 섹션은 `역할`, `목적`, `계층 원칙`, `모듈 기준`, `포함해야 할 것`, `포함하지 말아야 할 것`, `판정 기준`이다.
 - 레포별 책임 경계는 `standards/`가 소유한다.
 - `repositories/layer1/<repo>/README.md`는 실제 원격 레포의 현재 상태를 기록합니다.
 

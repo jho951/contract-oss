@@ -1,21 +1,15 @@
 # 2계층 공통 점검표
 
-이 문서는 기준을 다시 정의하지 않는다.
-각 항목은 기준 소유 문서가 적용됐는지만 확인한다.
-
 ## 구조 점검
 
-- [ ] `README.md`가 있다.
-- [ ] `gradle.properties` 구조는 [gradle-properties.md](../structure/gradle-properties.md)를 따른다.
-- [ ] `build.gradle` 구조는 [build-gradle.md](../structure/build-gradle.md)를 따른다.
-- [ ] `settings.gradle` 구조는 [settings-gradle.md](../structure/settings-gradle.md)를 따른다.
-- [ ] README는 공개 좌표, 흡수 대상, 제공 module, 책임 경계를 명시한다.
-- [ ] CI/CD 구조는 [ci-cd.md](ci-cd.md)를 따른다.
-- [ ] docs는 platform 소비와 확장에 필요한 문서만 둔다.
+- [ ] `README.md`는 필수이며, 공개 좌표, 흡수 대상, 제공 module, 책임 경계를 명시합니다.
+- [ ] [gradle-properties.md](../structure/gradle-properties.md)를 기준으로 `gradle.properties`를 구현합니다.
+- [ ] [build-gradle.md](../structure/build-gradle.md)를 기준으로 `build.gradle`를 구현합니다.
+- [ ] [settings-gradle.md](../structure/settings-gradle.md)를 기준으로 `settings.gradle`를 구현합니다.
+- [ ] [ci-cd.md](ci-cd.md)를 기준으로 CI/CD를 구현합니다.
 
 ## 제거 점검
 
-- [ ] 내부 계약 동기화 문서가 없다.
 - [ ] `.DS_Store`가 없다.
 - [ ] Gradle 캐시 디렉터리가 없다.
 - [ ] IDE 설정 디렉터리가 없다.

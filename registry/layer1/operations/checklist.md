@@ -1,24 +1,21 @@
 # 1계층 공통 점검표
 
-이 문서는 최신 tag 기준 구현을 SOT로 흡수하거나, SOT 기준을 각 1계층 레포에 반영할 때 쓰는 체크리스트다.
-
 ## 구조 점검
 
-- [ ] `README.md`가 있다.
-- [ ] `build.gradle`이 있다.
-- [ ] `settings.gradle`이 있다.
-- [ ] `gradle.properties`가 있다.
-- [ ] `gradle/`, `gradlew`, `gradlew.bat`이 있다.
-- [ ] `.github/workflows/build.yml`이 있다.
-- [ ] `.github/workflows/publish.yml`이 있다.
-- [ ] `docs/readme.md`가 있다.
-- [ ] `docs/architecture.md`가 있다.
-- [ ] `docs/modules.md`가 있다.
-- [ ] `docs/extension-guide.md`가 있다.
+- [ ] `README.md`가 필수입니다.
+- [ ] `build.gradle`이 필수입니다.
+- [ ] `settings.gradle`이 필수입니다.
+- [ ] `gradle.properties`가 필수입니다.
+- [ ] `gradle/`, `gradlew`, `gradlew.bat`이 필수입니다.
+- [ ] `.github/workflows/build.yml`이 필수입니다.
+- [ ] `.github/workflows/publish.yml`이 필수입니다.
+- [ ] `docs/readme.md`가 필수입니다.
+- [ ] `docs/architecture.md`가 필수입니다.
+- [ ] `docs/modules.md`가 필수입니다.
+- [ ] `docs/extension-guide.md`가 필수입니다.
 - [ ] docs 파일명은 소문자 `kebab-case`를 사용한다.
 - [ ] 테스트/CI 문서는 `docs/test-and-ci.md`로 통일되어 있다.
 - [ ] 트러블슈팅 문서는 `docs/troubleshooting.md`로 통일되어 있다.
-- [ ] 대문자 docs 파일명이 없다.
 - [ ] `docs/implementation-guide.md`는 레포 책임에 필요한 경우에만 둔다.
 - [ ] 레포별 특화 문서는 해당 OSS 표준의 책임 범위 안에 있다.
 - [ ] PR 템플릿은 `.github/pull_request_template.md`로 통일되어 있다.

@@ -2,18 +2,23 @@
 
 이 문서는 `audit-log` 1계층 OSS의 표준 책임과 경계를 고정한다.
 
+## 역할
+
+- 감사 이벤트와 sink primitive를 제공하는 1계층 OSS
+- audit event, context, masking, recorder를 제공하는 순수 기능 계층
+
 ## 목적
 
-- 감사 이벤트, context, masking, sink 계약을 제공한다.
-- 감사 기록 primitive를 순수 기능 모듈로 유지한다.
-- 2계층 `platform-governance`가 audit pipeline과 운영 정책을 조립할 수 있게 한다.
+- 감사 이벤트, context, masking, sink 계약을 1계층에 둔다.
+- 현재 조직 표준 governance line인 `platform-governance`가 audit runtime을 조립할 수 있게 한다.
+- 같은 primitive를 바탕으로 다른 governance 2계층 line도 만들 수 있게 한다.
 
 ## 계층 원칙
 
 - `audit-log`는 1계층 OSS다.
-- `audit-log`는 event schema와 sink primitive를 제공한다.
-- 정책 평가, 위반 처리, service-role preset, identity audit convenience API는 `platform-governance` 책임이다.
-- 소비자별 audit taxonomy와 도메인 사건 의미는 1계층 책임이 아니다.
+- `audit-log`는 event schema와 sink primitive를 제공하고 운영 taxonomy나 platform orchestration은 소유하지 않는다.
+- identity, resource, security 같은 audit taxonomy 표준화는 2계층 governance platform 책임이다.
+- 서비스별 audit 사건 의미와 domain-specific key 규칙은 소비자 또는 2계층 platform 책임이다.
 
 ## 모듈 기준
 
@@ -32,12 +37,12 @@
 ## 포함하지 말아야 할 것
 
 - governance 정책 평가 runtime
-- identity/resource/security 전용 audit taxonomy hardcoding
+- identity, resource, security 전용 audit taxonomy hardcoding
 - 서비스별 audit key 규칙
 - violation handler orchestration
 - platform bridge 구현
 
 ## 판정 기준
 
-- 감사 이벤트를 표현하고 sink로 전달하는 primitive면 `audit-log` 책임이다.
-- 어떤 운영 사건을 어떤 taxonomy로 기록하고 정책 위반과 연결할지 정하면 `platform-governance` 책임이다.
+- 감사 이벤트를 기록하기 위한 순수 모델과 sink primitive면 `audit-log` 책임이다.
+- audit taxonomy를 정하고 정책 평가나 위반 대응과 엮어 운영 기준으로 만드는 것은 2계층 governance platform 책임이다.
